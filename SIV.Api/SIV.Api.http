@@ -1,0 +1,6 @@
+@SIV.Api_HostAddress = http://localhost:5197
+
+GET {{SIV.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

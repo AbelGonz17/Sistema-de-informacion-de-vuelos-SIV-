@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SIV.Application.Test\SIV.Application.Test.csproj" />
-    <ProjectReference Include="..\SIV.IOC\SIV.IOC.csproj" />
+    <ProjectReference Include="..\SIV.Application\SIV.Application.csproj" />
+    <ProjectReference Include="..\SIV.Infrastructure\SIV.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

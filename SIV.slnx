@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/API/">
-    <Project Path="SIV.Api/SIV.Api.csproj" />
+    <Project Path="SIV.Api/SIV.Presentation.csproj" />
   </Folder>
   <Folder Name="/Application/">
     <Project Path="SIV.Application/SIV.Application.csproj" />
@@ -10,16 +10,9 @@
   </Folder>
   <Folder Name="/Infrastructure/">
     <Project Path="SIV.Infrastructure/SIV.Infrastructure.csproj" />
-    <Project Path="SIV.Persistence/SIV.Persistence.csproj" Id="2cd5f17e-7f9c-44ef-8c20-4b6a7edb73b3" />
-  </Folder>
-  <Folder Name="/IOC/">
-    <Project Path="SIV.IOC/SIV.IOC.csproj" Id="aa8343a2-9974-4b58-a679-f7193a8de9e3" />
   </Folder>
   <Folder Name="/Test/">
     <Project Path="SIV.Application.Test/SIV.Application.Test.csproj" Id="0073e88c-8488-432a-8197-09a851d37788" />
     <Project Path="SIV.Persistence.Test/SIV.Persistence.Test.csproj" Id="472457e0-cfbe-4b20-bf76-3e0bc729da5f" />
-  </Folder>
-  <Folder Name="/WEB/">
-    <Project Path="SIV.Web/SIV.Web.csproj" Id="3a544173-8ef3-4af9-ad8f-63bdad00bfd1" />
   </Folder>
 </Solution>

@@ -7,7 +7,7 @@ namespace SIV.Application
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplicationServices(this ServiceCollection services)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());

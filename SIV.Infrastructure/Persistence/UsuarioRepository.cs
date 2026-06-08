@@ -73,6 +73,5 @@ namespace SIV.Infrastructure.Persistence
                  .Select(u => u.Correo)
                  .ToListAsync();
         }
-
     }
 }

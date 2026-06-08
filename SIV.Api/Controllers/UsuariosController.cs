@@ -39,5 +39,29 @@ namespace SIV.Presentation.Controllers
 
             return Ok(new { mensaje = "Te has suscrito exitosamente a las alertas en tiempo real de este vuelo." });
         }
+
+
+        [HttpDelete("dejar-de-seguir")] 
+        [Authorize] 
+        public async Task<IActionResult> DejarDeSeguir([FromQuery] Guid vueloId)
+        {
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(usuarioIdClaim))
+                return Unauthorized("Identificación de usuario inválida o ausente en el token.");
+
+            var command = new DejarDeSeguirCommand
+            {
+                UsuarioId = Guid.Parse(usuarioIdClaim),
+                VueloId = vueloId
+            };
+
+            var resultado = await _mediator.Send(command);
+
+            if (!resultado)
+                return BadRequest("No se pudo procesar la solicitud de baja de seguimiento.");
+
+            return Ok(new { mensaje = "Te has dado de baja. Ya no recibirás notificaciones sobre este vuelo." });
+        }
     }
 }

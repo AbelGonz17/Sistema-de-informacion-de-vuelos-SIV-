@@ -1,0 +1,11 @@
+﻿using MediatR;
+using SIV.Application.Common.Interfaces;
+
+namespace SIV.Application.Modulo.Usuarios.Commands
+{
+    public class IniciarSeguimientoCommand : IRequest<bool>, IComandoOperativo
+    {
+        public Guid UsuarioId { get; set; }
+        public Guid VueloId { get; set; }
+    }
+}

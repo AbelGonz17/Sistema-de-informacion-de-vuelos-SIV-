@@ -22,6 +22,9 @@ namespace SIV.Infrastructure
             services.AddScoped<INotificacionService, NotificacionService>();
             services.AddScoped<ISeguridadService, SeguridadService>();
 
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+
             services.AddHttpContextAccessor();
             services.AddSignalR(); 
 

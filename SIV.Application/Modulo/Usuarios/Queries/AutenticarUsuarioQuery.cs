@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SIV.Application.Modulo.Usuario.Queries
+namespace SIV.Application.Modulo.Usuarios.Queries
 {
     public class AutenticarUsuarioQuery : IRequest<string>
     {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SIV.Application.Modulo.Usuario.Commands
+namespace SIV.Application.Modulo.Usuarios.Commands
 {
     public class RegistrarCuentaCommand : IRequest<string>
     {

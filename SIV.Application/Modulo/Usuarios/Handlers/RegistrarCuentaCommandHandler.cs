@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using SIV.Application.Modulo.Usuario.Commands;
+using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 
 
-namespace SIV.Application.Modulo.Usuario.Handlers
+namespace SIV.Application.Modulo.Usuarios.Handlers
 {
     public class RegistrarCuentaCommandHandler : IRequestHandler<RegistrarCuentaCommand,string>
     {

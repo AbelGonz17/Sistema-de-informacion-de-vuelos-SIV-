@@ -29,6 +29,14 @@ namespace SIV.Infrastructure.Persistence
             await _context.SaveChangesAsync();
         }
 
+        public async Task<Usuario?> ObtenerPorIdConVuelosAsync(Guid usuarioId)
+        {
+            return await _context.Usuarios
+                .AsNoTracking() 
+                .Include(u => u.VuelosSeguidos)
+                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+        }
+
         public async Task RegistrarSeguimientoAsync(Guid usuarioId, Guid vueloId)
         {
             var usuario = await _context.Usuarios

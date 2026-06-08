@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Usuarios.Commands;
+using SIV.Application.Modulo.Usuarios.Queries;
 using System.Security.Claims;
 
 namespace SIV.Presentation.Controllers
@@ -15,6 +16,35 @@ namespace SIV.Presentation.Controllers
         public UsuariosController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] AutenticarUsuarioQuery query)
+        {
+            var token = await _mediator.Send(query);
+            return Ok(new { tokenAccess = token, tipo = "Bearer" });
+        }
+
+        [HttpPost("registrar")]
+        public async Task<IActionResult> Registrar([FromBody] RegistrarCuentaCommand command)
+        {
+            var token = await _mediator.Send(command);
+            return Ok(new { tokenAccess = token, tipo = "Bearer", mensaje = "Usuario registrado y autenticado con éxito." });
+        }
+
+        [HttpGet("mis-seguimientos")]
+        [Authorize] 
+        public async Task<IActionResult> ObtenerMisSeguimientos()
+        {
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(usuarioIdClaim))
+                return Unauthorized("Identificación de usuario inválida o ausente en el token.");
+
+            var query = new ConsultarVuelosEnSeguimientoQuery { UsuarioId = Guid.Parse(usuarioIdClaim) };
+            var resultado = await _mediator.Send(query);
+
+            return Ok(resultado);
         }
 
         [HttpPost("seguir")]

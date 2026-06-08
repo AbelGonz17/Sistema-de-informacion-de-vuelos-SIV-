@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using SIV.Application.Modulo.Usuario.Queries;
+using SIV.Application.Modulo.Usuarios.Queries;
 using SIV.Domain.Interfaces;
 
-namespace SIV.Application.Modulo.Usuario.Handlers
+namespace SIV.Application.Modulo.Usuarios.Handlers
 {
     public class AutenticarUsuarioQueryHandler : IRequestHandler<AutenticarUsuarioQuery, string>
     {

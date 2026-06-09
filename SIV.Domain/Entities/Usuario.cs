@@ -7,9 +7,12 @@
         public string Correo { get; private set; }
         public string Rol { get; private set; }
         public string PassWordHash { get; private set; }
-        public ICollection<Vuelo> VuelosSeguidos { get; private set; } = new List<Vuelo>();
+        public ICollection<Vuelo> VuelosSeguidos { get; private set; } 
 
-        private Usuario() { }
+        private Usuario()
+        {
+            VuelosSeguidos = new HashSet<Vuelo>();
+        }
 
         public Usuario(
             Guid id, 
@@ -23,6 +26,7 @@
             Correo = correo;
             Rol = rol;
             PassWordHash = passWordHash;
+            VuelosSeguidos = new HashSet<Vuelo>();
         }
     }
 }

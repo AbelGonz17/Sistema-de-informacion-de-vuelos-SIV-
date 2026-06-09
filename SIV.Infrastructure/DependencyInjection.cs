@@ -13,7 +13,7 @@ namespace SIV.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("SIV_DB")));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
             services.AddScoped<IVueloRepository, VueloRepository>();
             services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();

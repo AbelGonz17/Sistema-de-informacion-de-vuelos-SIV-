@@ -12,7 +12,6 @@ namespace SIV.Infrastructure.Persistence
         public DbSet<Vuelo> Vuelos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<LogAuditoria> LogAuditorias { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,12 +21,35 @@ namespace SIV.Infrastructure.Persistence
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.NumeroVuelo).IsRequired().HasMaxLength(20);
                 entity.Property(e => e.Aerolinea).IsRequired().HasMaxLength(100);
+
+                entity.Property(e => e.Origen).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Destino).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Puerta).HasMaxLength(10);
+                entity.Property(e => e.HorarioPlanificadoSalida).IsRequired();
+                entity.Property(e => e.HorarioEstimadoSalida);
+
+                entity.Property(e => e.EstadoActual)
+                    .HasConversion<string>()
+                    .IsRequired()
+                    .HasMaxLength(30);
             });
 
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.Nombre).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Correo).IsRequired().HasMaxLength(150);
+                entity.Property(e => e.Rol).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.PassWordHash).IsRequired().HasMaxLength(255);
+
+                entity.HasMany(u => u.VuelosSeguidos)
+                      .WithMany()
+                      .UsingEntity<Dictionary<string, object>>(
+                          "UsuarioVueloSeguimiento", 
+                          j => j.HasOne<Vuelo>().WithMany().HasForeignKey("VueloId"),
+                          j => j.HasOne<Usuario>().WithMany().HasForeignKey("UsuarioId")
+                      );
             });
 
             modelBuilder.Entity<LogAuditoria>(entity =>
@@ -35,6 +57,9 @@ namespace SIV.Infrastructure.Persistence
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Usuario).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Accion).IsRequired().HasMaxLength(100);
+
+                entity.Property(e => e.Detalles).HasMaxLength(500);
+                entity.Property(e => e.FechaRegistro).IsRequired();
             });
         }
 

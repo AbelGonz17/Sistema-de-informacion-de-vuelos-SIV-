@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using SIV.Application.Modulo.Vuelos.Commands;
+using SIV.Domain.Common;
 using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {
-    public class CrearVueloCommandHandler : IRequestHandler<CrearVueloCommand, Guid>
+    public class CrearVueloCommandHandler : IRequestHandler<CrearVueloCommand, Result<Guid>>
     {
         private readonly IVueloRepository _vueloRepository;
 
@@ -14,7 +15,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             _vueloRepository = vueloRepository;
         }
 
-        public async Task<Guid> Handle(CrearVueloCommand request, CancellationToken cancellationToken)
+        public async Task<Result<Guid>> Handle(CrearVueloCommand request, CancellationToken cancellationToken)
         {
             var nuevoVuelo = new Vuelo(
                 Guid.NewGuid(),
@@ -23,7 +24,8 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 request.Origen,
                 request.Destino,
                 request.HorarioPlanificadoSalida,
-                request.HorarioPlanificadoLlegada
+                request.HorarioPlanificadoLlegada,
+                "Registro inicial del vuelo"
             );
 
             if (!string.IsNullOrWhiteSpace(request.Puerta))
@@ -33,7 +35,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
 
             await _vueloRepository.AgregarAsync(nuevoVuelo);
 
-            return nuevoVuelo.Id;
+            return Result<Guid>.Success(nuevoVuelo.Id);
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using SIV.Domain.Common;
 
 namespace SIV.Application.Modulo.Vuelos.Commands
 {
-    public class CrearVueloCommand : IRequest<Guid>
+    public class CrearVueloCommand : IRequest<Result<Guid>>
     {
         public string NumeroVuelo { get; set; } = string.Empty;
         public string Aerolinea { get; set; } = string.Empty;

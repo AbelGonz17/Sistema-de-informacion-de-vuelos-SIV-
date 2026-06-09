@@ -24,7 +24,8 @@ namespace SIV.Domain.Entities
             string origen, 
             string destino,
             DateTime horarioPlanificadoSalida, 
-            DateTime horarioPlanificadoLlegada)
+            DateTime horarioPlanificadoLlegada,
+            string motivoUltimoCambio)
         {
             Id = id;
             NumeroVuelo = numeroVuelo;
@@ -34,6 +35,7 @@ namespace SIV.Domain.Entities
             HorarioPlanificadoSalida = horarioPlanificadoSalida;
             HorarioPlanificadoLlegada = horarioPlanificadoLlegada;
             EstadoActual = EstadoVuelo.Programado;
+            MotivoUltimoCambio = motivoUltimoCambio;
         }
 
         public void CambiarEstado(EstadoVuelo nuevoEstado)
@@ -54,14 +56,17 @@ namespace SIV.Domain.Entities
         {
             if (EstadoActual == EstadoVuelo.Cancelado || EstadoActual == EstadoVuelo.Completado)
                 throw new InvalidOperationException("No se pueden registrar cambios operativos en vuelos cerrados o cancelados.");
-            
 
             if (string.IsNullOrWhiteSpace(motivo))
                 throw new InvalidOperationException("El motivo del retraso es obligatorio.");
-            
+
+            TimeSpan duracionVuelo = HorarioPlanificadoLlegada - HorarioPlanificadoSalida;
+
             HorarioEstimadoSalida = nuevaHoraSalida;
+            HorarioEstimadoLlegada = nuevaHoraSalida.Add(duracionVuelo); 
+
             MotivoUltimoCambio = motivo;
-            EstadoActual = EstadoVuelo.Retrasado; 
+            EstadoActual = EstadoVuelo.Retrasado;
         }
 
         public void ActualizarPuerta(string nuevaPuerta)

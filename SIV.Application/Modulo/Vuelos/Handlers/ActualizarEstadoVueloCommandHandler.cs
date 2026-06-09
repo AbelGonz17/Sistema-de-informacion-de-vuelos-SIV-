@@ -6,7 +6,7 @@ using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {
-    public class ActualizarEstadoVueloCommandHandler : IRequestHandler<ActualizarEstadoVueloCommand, bool>
+    public class ActualizarEstadoVueloCommandHandler : IRequestHandler<ActualizarEstadoVueloCommand, Result<bool>>
     {
         private readonly IVueloRepository _vueloRepository;
         private readonly IAuditoriaRepository _auditoriaRepository;
@@ -25,7 +25,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             _mediator = mediator;
         }
 
-        public async Task<bool> Handle(ActualizarEstadoVueloCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(ActualizarEstadoVueloCommand request, CancellationToken cancellationToken)
         {
 
             var vuelo = await _vueloRepository.ObtenerPorIdAsync(request.VueloId);
@@ -57,7 +57,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 NuevoEstado = vuelo.EstadoActual.ToString()
             }, cancellationToken);
 
-            return true;
+            return Result<bool>.Success(true);
         }
     }
 }

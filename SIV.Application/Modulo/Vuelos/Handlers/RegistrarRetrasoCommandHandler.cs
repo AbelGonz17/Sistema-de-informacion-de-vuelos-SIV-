@@ -6,7 +6,7 @@ using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {
-    public class RegistrarRetrasoCommandHandler : IRequestHandler<RegistrarRetrasoCommand, bool>
+    public class RegistrarRetrasoCommandHandler : IRequestHandler<RegistrarRetrasoCommand, Result<bool>>
     {
         private readonly IVueloRepository _vueloRepository;
         private readonly IAuditoriaRepository _auditoriaRepository;
@@ -25,7 +25,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             _mediator = mediator;
         }
 
-        public async Task<bool> Handle(RegistrarRetrasoCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(RegistrarRetrasoCommand request, CancellationToken cancellationToken)
         {   
             var vuelo = await _vueloRepository.ObtenerPorIdAsync(request.VueloId);
 
@@ -49,7 +49,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 NuevoEstado = vuelo.EstadoActual.ToString()
             }, cancellationToken);
 
-            return true;
+            return Result<bool>.Success(true);
         }
     }
 }

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Application.Modulo.Usuarios.Queries;
-using SIV.Domain.Common;
 using SIV.Presentation.Common;
 using System.Security.Claims;
 

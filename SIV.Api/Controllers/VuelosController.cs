@@ -1,8 +1,10 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Application.Modulo.Vuelos.Queries;
+using SIV.Presentation.Common;
 
 namespace SIV.Presentation.Controllers
 {
@@ -16,43 +18,47 @@ namespace SIV.Presentation.Controllers
             _mediator = mediator;
         }
 
+        [HttpPost("registrar")]
+        public async Task<IActionResult> RegistrarVuelo([FromBody] CrearVueloCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult();
+        }
+
         [HttpPost("actualizar-estado")]
+        [Authorize]
         public async Task<IActionResult> ActualizarEstado([FromBody] ActualizarEstadoVueloCommand command)
         {
-            var resultado = await _mediator.Send(command);
-
-            if (!resultado) return BadRequest("No se pudo procesar la actualización del vuelo.");
-
-            return Ok(new { mensaje = "Estado de vuelo actualizado exitosamente." });
+            var result = await _mediator.Send(command);
+    
+            return result.ToActionResult();
         }
 
         [HttpPost("registrar-retraso")]
         public async Task<IActionResult> RegistrarRetraso([FromBody] RegistrarRetrasoCommand command)
         {
-            var resultado = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            if (!resultado) return BadRequest("No se pudo procesar el registro del retraso.");
-
-            return Ok(new { mensaje = "Retraso operativo registrado y publicado con éxito." });
+            return result.ToActionResult();
         }
 
         [HttpGet("tablero")]
-        public async Task<ActionResult<IEnumerable<VueloDto>>> ObtenerTablero([FromQuery] DateTime fecha, [FromQuery] bool esLlegada)
+        public async Task<IActionResult> ObtenerTablero([FromQuery] DateTime fecha, [FromQuery] bool esLlegada)
         {
             var query = new ConsultarTableroLlegadasQuery { Fecha = fecha, EsLlegada = esLlegada };
-            var resultado = await _mediator.Send(query);
-            return Ok(resultado);
+            var result = await _mediator.Send(query);
+
+            return result.ToActionResult();
         }
 
         [HttpGet("buscar/{numeroVuelo}")]
-        public async Task<ActionResult<VueloDto>> BuscarPorNumero(string numeroVuelo)
+        public async Task<IActionResult> BuscarPorNumero(string numeroVuelo)
         {
             var query = new BuscarVueloEspecificoQuery { NumeroVuelo = numeroVuelo };
-            var resultado = await _mediator.Send(query);
+            var result = await _mediator.Send(query);
 
-            if (resultado == null) return NotFound($"El vuelo número {numeroVuelo} no fue localizado.");
-
-            return Ok(resultado);
+            return result.ToActionResult();
         }
     }
 }

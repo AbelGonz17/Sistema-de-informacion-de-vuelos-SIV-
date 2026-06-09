@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Modulo.Vuelos.Queries;
+using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {
-    public class BuscarVueloEspecificoQueryHandler : IRequestHandler<BuscarVueloEspecificoQuery,VueloDto>
+    public class BuscarVueloEspecificoQueryHandler : IRequestHandler<BuscarVueloEspecificoQuery, Result<VueloDto>>
     {
         private readonly IVueloRepository _vueloRepository;
 
@@ -14,13 +15,13 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             _vueloRepository = vueloRepository;
         }
 
-        public async Task<VueloDto> Handle(BuscarVueloEspecificoQuery request, CancellationToken cancellationToken)
+        public async Task<Result<VueloDto>> Handle(BuscarVueloEspecificoQuery request, CancellationToken cancellationToken)
         {
             var vuelo = await _vueloRepository.ObtenerPorNumeroAsync(request.NumeroVuelo);
             if (vuelo == null) 
-                return null;
+                return Result<VueloDto>.Failure("Vuelo no encontrado");
 
-            return new VueloDto
+            return Result<VueloDto>.Success(new VueloDto
             {
                 Id = vuelo.Id,
                 NumeroVuelo = vuelo.NumeroVuelo,
@@ -31,7 +32,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 HorarioEstimadoSalida = vuelo.HorarioEstimadoSalida,
                 Puerta = vuelo.Puerta,
                 EstadoActual = vuelo.EstadoActual.ToString()
-            };
+            });
         }
     }
 }

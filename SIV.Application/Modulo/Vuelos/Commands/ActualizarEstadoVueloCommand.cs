@@ -4,7 +4,7 @@ using SIV.Domain.Common;
 
 namespace SIV.Application.Modulo.Vuelos.Commands
 {
-    public class ActualizarEstadoVueloCommand : IRequest<bool>, IComandoOperativo
+    public class ActualizarEstadoVueloCommand : IRequest<Result<bool>>, IComandoOperativo
     {
         public Guid VueloId { get; set; }
         public EstadoVuelo NuevoEstado { get; set; }

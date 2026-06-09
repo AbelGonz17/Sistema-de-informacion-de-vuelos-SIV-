@@ -1,10 +1,13 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Queries;
+using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
+using System.Net;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
-    public class AutenticarUsuarioQueryHandler : IRequestHandler<AutenticarUsuarioQuery, string>
+    public class AutenticarUsuarioQueryHandler : IRequestHandler<AutenticarUsuarioQuery, Result<string>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ITokenService _tokenService;
@@ -17,19 +20,19 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<string> Handle(AutenticarUsuarioQuery request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(AutenticarUsuarioQuery request, CancellationToken cancellationToken)
         {
             var usuario = await _usuarioRepository.ObtenerPorCorreoAsync(request.Correo);
 
             if (usuario == null)
-                throw new InvalidOperationException("Las credenciales ingresadas son incorrectas.");
+                return Result<string>.Failure("Las credenciales ingresadas son incorrectas.",StatusCodes.Status400BadRequest);
 
             bool contraseñaValida = _passwordHasher.Verify(request.Contrasena, usuario.PassWordHash);
 
             if (!contraseñaValida)
-                throw new InvalidOperationException("Las credenciales ingresadas son incorrectas.");
+                return Result<string>.Failure("Las credenciales ingresadas son incorrectas.",StatusCodes.Status400BadRequest);
 
-            return _tokenService.GenerarToken(usuario);
+            return Result<string>.Success(_tokenService.GenerarToken(usuario));
         }
     }
 }

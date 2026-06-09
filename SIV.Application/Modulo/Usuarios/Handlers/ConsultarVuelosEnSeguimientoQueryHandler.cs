@@ -1,11 +1,13 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Modulo.Usuarios.Queries;
+using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
-    public class ConsultarVuelosEnSeguimientoQueryHandler : IRequestHandler<ConsultarVuelosEnSeguimientoQuery, IEnumerable<VueloDto>>
+    public class ConsultarVuelosEnSeguimientoQueryHandler : IRequestHandler<ConsultarVuelosEnSeguimientoQuery, Result<IEnumerable<VueloDto>>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
 
@@ -14,13 +16,13 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
             _usuarioRepository = usuarioRepository;
         }
 
-        public async Task<IEnumerable<VueloDto>> Handle(ConsultarVuelosEnSeguimientoQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<VueloDto>>> Handle(ConsultarVuelosEnSeguimientoQuery request, CancellationToken cancellationToken)
         {
             var usuario = await _usuarioRepository.ObtenerPorIdConVuelosAsync(request.UsuarioId);
 
             if (usuario == null)
-                return new List<VueloDto>();
-            
+                return Result<IEnumerable<VueloDto>>.Failure("Usuario no encontrado", StatusCodes.Status404NotFound);
+
             var listaDtos = usuario.VuelosSeguidos.Select(vuelo => new VueloDto
             {
                 Id = vuelo.Id,
@@ -34,7 +36,7 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
                 EstadoActual = vuelo.EstadoActual.ToString()
             }).ToList();
 
-            return listaDtos;
+            return Result<IEnumerable<VueloDto>>.Success(listaDtos);
         }
     }
 }

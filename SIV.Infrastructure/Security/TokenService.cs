@@ -25,7 +25,7 @@ namespace SIV.Infrastructure.Security
                 new Claim(ClaimTypes.Email, usuario.Correo),
                 new Claim(ClaimTypes.Role, usuario.Rol) 
             };
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"] ?? "ClaveSuperSecretaDeAeroSIV2026!"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"] ?? "ClaveSuperSecretaDeAeroSIV2026_FirmaLlave"));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(

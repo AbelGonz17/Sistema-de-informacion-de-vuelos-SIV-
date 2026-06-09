@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
@@ -6,7 +7,7 @@ using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
-    public class RegistrarCuentaCommandHandler : IRequestHandler<RegistrarCuentaCommand,string>
+    public class RegistrarCuentaCommandHandler : IRequestHandler<RegistrarCuentaCommand, Result<string>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ITokenService _tokenService;
@@ -19,13 +20,13 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<string> Handle(RegistrarCuentaCommand request, CancellationToken cancellationToken)
+        public async Task<Result<string>> Handle(RegistrarCuentaCommand request, CancellationToken cancellationToken)
         {
             var usuarioExistente =
                 await _usuarioRepository.ObtenerPorCorreoAsync(request.Correo);
 
             if (usuarioExistente != null)
-                throw new InvalidOperationException("El correo electrónico ya se encuentra registrado en el sistema.");
+                return Result<string>.Failure("El correo electrónico ya se encuentra registrado en el sistema.",StatusCodes.Status409Conflict);
 
             string passwordHash = _passwordHasher.Hash(request.Contrasena);
 
@@ -38,7 +39,7 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
 
             await _usuarioRepository.AgregarAsync(nuevoUsuario);
 
-            return _tokenService.GenerarToken(nuevoUsuario);
+            return Result<string>.Success(_tokenService.GenerarToken(nuevoUsuario));
         }
     }
 }

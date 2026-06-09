@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using SIV.Application.Modulo.Usuarios.Commands;
+using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
-    public class DejarDeSeguirCommandHandler : IRequestHandler<DejarDeSeguirCommand,bool>
+    public class DejarDeSeguirCommandHandler : IRequestHandler<DejarDeSeguirCommand,Result<bool>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
 
@@ -12,11 +13,11 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
         {
             _usuarioRepository = usuarioRepository;
         }
-        public async Task<bool> Handle(DejarDeSeguirCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(DejarDeSeguirCommand request, CancellationToken cancellationToken)
         {
             await _usuarioRepository.EliminarSeguimientoAsync(request.UsuarioId, request.VueloId);
 
-            return true;
+            return Result<bool>.Success(true);
         }
     }
 }

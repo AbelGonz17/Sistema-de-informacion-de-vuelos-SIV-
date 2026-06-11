@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Modulo.Vuelos.Commands;
@@ -8,6 +9,7 @@ namespace SIV.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class VuelosController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -16,44 +18,99 @@ namespace SIV.Presentation.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("actualizar-estado")]
-        public async Task<IActionResult> ActualizarEstado([FromBody] ActualizarEstadoVueloCommand command)
+        [HttpPost("registrar")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<Guid>> RegistrarVuelo([FromBody] CrearVueloCommand command)
         {
-            var resultado = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            if (!resultado) return BadRequest("No se pudo procesar la actualización del vuelo.");
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
-            return Ok(new { mensaje = "Estado de vuelo actualizado exitosamente." });
+            return BadRequest(result);
+        }
+
+        [HttpPost("actualizar-estado")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> ActualizarEstado([FromBody] ActualizarEstadoVueloCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result);
         }
 
         [HttpPost("registrar-retraso")]
-        public async Task<IActionResult> RegistrarRetraso([FromBody] RegistrarRetrasoCommand command)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> RegistrarRetraso([FromBody] RegistrarRetrasoCommand command)
         {
-            var resultado = await _mediator.Send(command);
+            var result = await _mediator.Send(command);
 
-            if (!resultado) return BadRequest("No se pudo procesar el registro del retraso.");
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
-            return Ok(new { mensaje = "Retraso operativo registrado y publicado con éxito." });
+            return BadRequest(result);
+        }
+
+        [HttpPost("asignar-puerta")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<ActionResult<bool>> AsignarPuerta([FromBody] AsignarPuertaCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.ErrorMessage);
         }
 
         [HttpGet("tablero")]
-        public async Task<ActionResult<IEnumerable<VueloDto>>> ObtenerTablero([FromQuery] DateTime fecha, [FromQuery] bool esLlegada)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VueloTableroDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        public async Task<ActionResult<IEnumerable<VueloTableroDto>>> ObtenerTablero([FromQuery] DateTime fecha, [FromQuery] bool esLlegada)
         {
             var query = new ConsultarTableroLlegadasQuery { Fecha = fecha, EsLlegada = esLlegada };
-            var resultado = await _mediator.Send(query);
-            return Ok(resultado);
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.ErrorMessage);
         }
 
         [HttpGet("buscar/{numeroVuelo}")]
-        public async Task<ActionResult<VueloDto>> BuscarPorNumero(string numeroVuelo)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<object>> BuscarPorNumero(string numeroVuelo)
         {
             var query = new BuscarVueloEspecificoQuery { NumeroVuelo = numeroVuelo };
-            var resultado = await _mediator.Send(query);
+            var result = await _mediator.Send(query);
 
-            if (resultado == null) return NotFound($"El vuelo número {numeroVuelo} no fue localizado.");
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
-            return Ok(resultado);
+            return BadRequest(result);
         }
     }
 }
-

@@ -25,6 +25,8 @@ namespace SIV.Infrastructure
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             services.AddHttpContextAccessor();
             services.AddSignalR(); 
 

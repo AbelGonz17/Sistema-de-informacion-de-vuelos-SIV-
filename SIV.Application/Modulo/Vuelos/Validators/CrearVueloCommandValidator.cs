@@ -16,11 +16,13 @@ namespace SIV.Application.Modulo.Vuelos.Validators
                 .MaximumLength(100).WithMessage("El nombre de la aerolínea es demasiado largo.");
 
             RuleFor(c => c.Origen)
-                .NotEmpty().WithMessage("El aeropuerto de origen es requerido.");
+                .NotEmpty().WithMessage("El aeropuerto de origen es requerido.")
+                .MaximumLength(4);
 
             RuleFor(c => c.Destino)
                 .NotEmpty().WithMessage("El aeropuerto de destino es requerido.")
-                .NotEqual(c => c.Origen).WithMessage("El destino no puede ser igual al origen.");
+                .NotEqual(c => c.Origen).WithMessage("El destino no puede ser igual al origen.")
+                .MaximumLength(4); 
 
             RuleFor(c => c.HorarioPlanificadoSalida)
                 .NotEmpty().WithMessage("La hora de salida es obligatoria.")

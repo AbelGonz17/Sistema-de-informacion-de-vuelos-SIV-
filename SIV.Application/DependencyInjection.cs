@@ -16,6 +16,8 @@ namespace SIV.Application
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidacionBehavior<,>));
             });
 
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(TransaccionBehavior<,>));
+
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
             return services;

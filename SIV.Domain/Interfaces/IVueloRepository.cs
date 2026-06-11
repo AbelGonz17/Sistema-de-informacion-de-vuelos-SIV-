@@ -8,6 +8,7 @@ namespace SIV.Domain.Interfaces
         Task<Vuelo> ObtenerPorNumeroAsync(string numeroVuelo);
         Task<IEnumerable<Vuelo>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada); 
         Task AgregarAsync(Vuelo vuelo);
-        Task ActualizarAsync(Vuelo vuelo); 
+        Task ActualizarAsync(Vuelo vuelo);
+        Task<bool> ExisteVueloAsync(string numeroVuelo, string aerolinea, DateTime fecha, string origen, string destino);
     }
 }

@@ -2,18 +2,17 @@
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
-using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {
-    public class ActualizarEstadoVueloCommandHandler : IRequestHandler<ActualizarEstadoVueloCommand, Result<bool>>
+    public class AsignarPuertaCommandHandler : IRequestHandler<AsignarPuertaCommand, Result<bool>>
     {
         private readonly IVueloRepository _vueloRepository;
         private readonly ISeguridadService _seguridadService;
         private readonly IMediator _mediator;
 
-        public ActualizarEstadoVueloCommandHandler(
+        public AsignarPuertaCommandHandler(
             IVueloRepository vueloRepository,
             ISeguridadService seguridadService,
             IMediator mediator)
@@ -23,19 +22,17 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             _mediator = mediator;
         }
 
-        public async Task<Result<bool>> Handle(ActualizarEstadoVueloCommand request, CancellationToken cancellationToken)
+        public async Task<Result<bool>> Handle(AsignarPuertaCommand request, CancellationToken cancellationToken)
         {
             var vuelo = await _vueloRepository.ObtenerPorIdAsync(request.VueloId);
-            if (vuelo == null) return Result<bool>.Failure("El vuelo no existe.", StatusCodes.Status404NotFound);
+            if (vuelo == null)
+                return Result<bool>.Failure("El vuelo no existe.", StatusCodes.Status404NotFound);
 
-            if (request.NuevoEstado == EstadoVuelo.Retrasado)
-            {
-                vuelo.RegistrarRetraso(DateTime.UtcNow.AddHours(1), request.MotivoCambio);
-            }
-            else
-            {
-                vuelo.CambiarEstado(request.NuevoEstado, request.MotivoCambio);
-            }
+            if (vuelo.EstadoActual == EstadoVuelo.Cancelado || vuelo.EstadoActual == EstadoVuelo.Completado)
+                return Result<bool>.Failure("No se puede cambiar la puerta de un vuelo cerrado o cancelado.", StatusCodes.Status400BadRequest);
+
+            string puertaAnterior = vuelo.Puerta;
+            vuelo.ActualizarPuerta(request.NuevaPuerta, request.MotivoCambio);
 
             await _vueloRepository.ActualizarAsync(vuelo);
 
@@ -46,12 +43,13 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 VueloId = vuelo.Id,
                 NumeroVuelo = vuelo.NumeroVuelo,
                 NuevoEstado = vuelo.EstadoActual.ToString(),
-                MotivoCambio = $"Se cambió el estado del vuelo {vuelo.NumeroVuelo} a {vuelo.EstadoActual}. Motivo: {request.MotivoCambio}",
                 Usuario = usuarioActual,
-                Accion = "ActualizarEstado"
+                MotivoCambio = $"Cambio de puerta de la {puertaAnterior} a la {request.NuevaPuerta}. Motivo: {request.MotivoCambio}",
+                Accion = "Cambio de Puerta"
             }, cancellationToken);
 
             return Result<bool>.Success(true);
         }
+
     }
 }

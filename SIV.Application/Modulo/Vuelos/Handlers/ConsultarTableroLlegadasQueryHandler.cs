@@ -6,7 +6,7 @@ using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {
-    public class ConsultarTableroLlegadasQueryHandler : IRequestHandler<ConsultarTableroLlegadasQuery, Result<IEnumerable<VueloDto>>>
+    public class ConsultarTableroLlegadasQueryHandler : IRequestHandler<ConsultarTableroLlegadasQuery, Result<IEnumerable<VueloTableroDto>>>
     {
         private readonly IVueloRepository _vueloRepository;
 
@@ -15,33 +15,25 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             _vueloRepository = vueloRepository;
         }
 
-        public async Task<Result<IEnumerable<VueloDto>>> Handle(ConsultarTableroLlegadasQuery request, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<VueloTableroDto>>> Handle(ConsultarTableroLlegadasQuery request, CancellationToken cancellationToken)
         {
-            var vuelos = await _vueloRepository.ObtenerVuelosPorFechaYTipoAsync(request.Fecha, request.EsLlegada);
+            var vuelosDb = await _vueloRepository.ObtenerVuelosPorFechaYTipoAsync(request.Fecha, request.EsLlegada);
 
-            if (vuelos == null || !vuelos.Any())
-            {
-                string tipoTablero = request.EsLlegada ? "llegadas" : "salidas";
-                return Result<IEnumerable<VueloDto>>.Failure(
-                    $"No se encontraron operaciones de {tipoTablero} registradas para la fecha {request.Fecha:dd/MM/yyyy}.",
-                    Microsoft.AspNetCore.Http.StatusCodes.Status404NotFound
-                );
-            }
-
-            var listaDtos = vuelos.Select(v => new VueloDto
+            var listadoTablero = vuelosDb.Select(v => new VueloTableroDto
             {
                 Id = v.Id,
                 NumeroVuelo = v.NumeroVuelo,
                 Aerolinea = v.Aerolinea,
                 Origen = v.Origen,
                 Destino = v.Destino,
-                HorarioPlanificadoSalida = v.HorarioPlanificadoSalida,
-                HorarioEstimadoSalida = v.HorarioEstimadoSalida,
-                Puerta = v.Puerta,
-                EstadoActual = v.EstadoActual.ToString()
-            }).ToList();
+                Puerta = string.IsNullOrWhiteSpace(v.Puerta) ? "TBD" : v.Puerta,
+                Estado = v.EstadoActual.ToString(),
 
-            return Result<IEnumerable<VueloDto>>.Success(listaDtos);
+                HorarioPlanificado = request.EsLlegada ? v.HorarioPlanificadoLlegada : v.HorarioPlanificadoSalida,
+                HorarioEstimado = request.EsLlegada ? v.HorarioEstimadoLlegada : v.HorarioEstimadoSalida 
+            }).OrderBy(v => v.HorarioPlanificado); 
+
+            return Result<IEnumerable<VueloTableroDto>>.Success(listadoTablero);
         }
     }
 }

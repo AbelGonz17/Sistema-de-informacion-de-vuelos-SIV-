@@ -59,21 +59,33 @@ namespace SIV.Domain.Entities
             }
         }
 
-        public void RegistrarRetraso(DateTime nuevaHoraSalida, string motivo)
+        public void ActualizarHorarioEstimado(DateTime nuevaHoraSalida, string motivo)
         {
             if (EstadoActual == EstadoVuelo.Cancelado || EstadoActual == EstadoVuelo.Completado)
                 throw new InvalidOperationException("No se pueden registrar cambios operativos en vuelos cerrados o cancelados.");
 
             if (string.IsNullOrWhiteSpace(motivo))
-                throw new InvalidOperationException("El motivo del retraso es obligatorio.");
+                throw new InvalidOperationException("El motivo del cambio de horario es obligatorio.");
 
             TimeSpan duracionVuelo = HorarioPlanificadoLlegada - HorarioPlanificadoSalida;
 
             HorarioEstimadoSalida = nuevaHoraSalida;
             HorarioEstimadoLlegada = nuevaHoraSalida.Add(duracionVuelo);
+        
+            if (nuevaHoraSalida > HorarioPlanificadoSalida)
+            {
+                EstadoActual = EstadoVuelo.Retrasado;
+            }
+            else if (nuevaHoraSalida < HorarioPlanificadoSalida)
+            {
+                EstadoActual = EstadoVuelo.Adelantado; 
+            }
+            else
+            {
+                EstadoActual = EstadoVuelo.Programado; 
+            }
 
             MotivoUltimoCambio = motivo;
-            EstadoActual = EstadoVuelo.Retrasado;
         }
 
         public void ActualizarPuerta(string nuevaPuerta, string motivo)

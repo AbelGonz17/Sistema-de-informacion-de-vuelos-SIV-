@@ -30,20 +30,22 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             if (vuelo == null)
                 return Result<bool>.Failure("El vuelo especificado no existe.", StatusCodes.Status404NotFound);
 
-            vuelo.RegistrarRetraso(request.NuevaHoraSalida, request.Motivo);
+            vuelo.ActualizarHorarioEstimado(request.NuevaHoraSalida, request.Motivo);
 
             await _vueloRepository.ActualizarAsync(vuelo);
 
             var usuario = _seguridadService.ObtenerUsarioActual();
+
+            string accionReal = request.NuevaHoraSalida > vuelo.HorarioPlanificadoSalida ? "RegistrarRetraso" : "RegistrarAdelanto";
 
             await _mediator.Publish(new VueloModificadoEvent
             {
                 VueloId = vuelo.Id,
                 NumeroVuelo = vuelo.NumeroVuelo,
                 NuevoEstado = vuelo.EstadoActual.ToString(),
-                MotivoCambio = $"Se registró un retraso para el vuelo {vuelo.NumeroVuelo}. Motivo: {request.Motivo}",
+                MotivoCambio = $"Ajuste de horario para el vuelo {vuelo.NumeroVuelo}. Nueva hora estimada: {request.NuevaHoraSalida}. Motivo: {request.Motivo}",
                 Usuario = usuario,
-                Accion = "Retraso registrado"
+                Accion = accionReal
             }, cancellationToken);
 
             return Result<bool>.Success(true);

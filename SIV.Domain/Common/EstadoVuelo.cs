@@ -8,6 +8,7 @@
         Aterrizado,
         Completado,
         Cancelado,
-        Retrasado
+        Retrasado,
+        Adelantado
     }
 }

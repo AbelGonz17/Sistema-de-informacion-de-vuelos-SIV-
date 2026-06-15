@@ -70,6 +70,24 @@ namespace SIV.Presentation.Controllers
             return result.ToActionResult();
         }
 
+        [HttpPut("{id}/estado")]
+        [Authorize(Roles = "Administrador")] 
+        public async Task<IActionResult> CambiarEstado([FromRoute] Guid id, [FromBody] CambiarEstadoDto dto)
+        {
+            var command = new CambiarEstadoUsuarioCommand(id, dto.Activo);
+
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult();
+        }
+
+        [HttpPost("logout")]
+        [Authorize] 
+        public async Task<IActionResult> Logout()
+        {
+            return Ok(new { mensaje = "Sesión cerrada de forma segura. Remueva el token del almacenamiento local." });
+        }
+
         [HttpDelete("dejar-de-seguir")]
         [Authorize]
         public async Task<IActionResult> DejarDeSeguir([FromQuery] Guid vueloId)

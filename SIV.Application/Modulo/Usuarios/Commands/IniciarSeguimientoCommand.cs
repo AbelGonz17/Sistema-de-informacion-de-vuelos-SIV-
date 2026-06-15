@@ -4,9 +4,9 @@ using SIV.Domain.Common;
 
 namespace SIV.Application.Modulo.Usuarios.Commands
 {
-    public class IniciarSeguimientoCommand : IRequest<Result<bool>>, IComandoOperativo
+    public class IniciarSeguimientoCommand : IRequest<Result<bool>>, IComandoSeguimiento
     {
         public Guid UsuarioId { get; set; }
-        public Guid VueloId { get; set; }
+        public Guid VueloId { get; set; } 
     }
 }

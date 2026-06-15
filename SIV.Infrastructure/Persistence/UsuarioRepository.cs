@@ -26,13 +26,11 @@ namespace SIV.Infrastructure.Persistence
         public async Task AgregarAsync(Usuario usuario)
         {
             await _context.Usuarios.AddAsync(usuario);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<Usuario?> ObtenerPorIdConVuelosAsync(Guid usuarioId)
         {
             return await _context.Usuarios
-                .AsNoTracking() 
                 .Include(u => u.VuelosSeguidos)
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
@@ -50,7 +48,6 @@ namespace SIV.Infrastructure.Persistence
                 if (!usuario.VuelosSeguidos.Any(v => v.Id == vueloId))
                 {
                     usuario.VuelosSeguidos.Add(vuelo);
-                    await _context.SaveChangesAsync();
                 }
             }
         }
@@ -68,15 +65,20 @@ namespace SIV.Infrastructure.Persistence
                 if (vueloSeguido != null)
                 {
                     usuario.VuelosSeguidos.Remove(vueloSeguido);
-                    await _context.SaveChangesAsync(); 
                 }
             }
+        }
+
+        public Task ActualizarAsync(Usuario usuario)
+        {
+            _context.Update(usuario);
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<string>> ObtenerSeguidoresDeVueloAsync(Guid vueloId)
         {
             return await _context.Usuarios
-                 .AsNoTracking() 
+                 .AsNoTracking()
                  .Where(u => u.VuelosSeguidos.Any(v => v.Id == vueloId))
                  .Select(u => u.Correo)
                  .ToListAsync();

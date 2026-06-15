@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SIV.Application.Modulo.Vuelos.Commands
+namespace SIV.Application.Modulo.Vuelos.Events
 {
     public class VueloModificadoEvent : INotification
     {

@@ -5,7 +5,7 @@ using SIV.Application.Modulo.Usuarios.Queries;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 
-namespace SIV.Application.Modulo.Usuarios.Handlers
+namespace SIV.Application.Modulo.Usuarios.Handlers.Queries
 {
     public class ConsultarVuelosEnSeguimientoQueryHandler : IRequestHandler<ConsultarVuelosEnSeguimientoQuery, Result<IEnumerable<VueloDto>>>
     {

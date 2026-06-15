@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using SIV.Application.Modulo.Vuelos.Events;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;

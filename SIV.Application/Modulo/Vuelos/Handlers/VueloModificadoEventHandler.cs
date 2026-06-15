@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SIV.Application.Modulo.Vuelos.Commands;
+using SIV.Application.Modulo.Vuelos.Events;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers

@@ -11,5 +11,6 @@ namespace SIV.Domain.Interfaces
         Task RegistrarSeguimientoAsync(Guid usuarioId, Guid vueloId);
         Task EliminarSeguimientoAsync(Guid usuarioId, Guid vueloId);
         Task<IEnumerable<string>> ObtenerSeguidoresDeVueloAsync(Guid vueloId);
+        Task ActualizarAsync(Usuario usuario);
     }
 }

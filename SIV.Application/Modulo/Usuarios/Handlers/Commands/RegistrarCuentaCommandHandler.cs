@@ -1,23 +1,30 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Commands;
+using SIV.Application.Modulo.Usuarios.Events;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 
 
-namespace SIV.Application.Modulo.Usuarios.Handlers
+namespace SIV.Application.Modulo.Usuarios.Handlers.Commands
 {
     public class RegistrarCuentaCommandHandler : IRequestHandler<RegistrarCuentaCommand, Result<string>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ITokenService _tokenService;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IMediator _mediator;
 
-        public RegistrarCuentaCommandHandler(IUsuarioRepository usuarioRepository, ITokenService tokenService, IPasswordHasher passwordHasher)
+        public RegistrarCuentaCommandHandler(
+            IUsuarioRepository usuarioRepository, 
+            ITokenService tokenService, 
+            IPasswordHasher passwordHasher,
+            IMediator mediator)
         {
             _usuarioRepository = usuarioRepository;
             _tokenService = tokenService;
             _passwordHasher = passwordHasher;
+            _mediator = mediator;
         }
 
         public async Task<Result<string>> Handle(RegistrarCuentaCommand request, CancellationToken cancellationToken)
@@ -34,10 +41,16 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
                 Guid.NewGuid(),
                 request.Nombre,
                 request.Correo,
-                RolesConstantes.Administrador,
+                RolesConstantes.Visitante,
                 passwordHash);
 
             await _usuarioRepository.AgregarAsync(nuevoUsuario);
+
+            await _mediator.Publish(new CuentaRegistradaEvent
+            {
+                UsuarioId = nuevoUsuario.Id,
+                Correo = nuevoUsuario.Correo
+            }, cancellationToken);
 
             return Result<string>.Success(_tokenService.GenerarToken(nuevoUsuario));
         }

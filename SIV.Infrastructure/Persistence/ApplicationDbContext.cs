@@ -37,16 +37,31 @@ namespace SIV.Infrastructure.Persistence
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.HasIndex(u => u.Correo).IsUnique(); 
+
                 entity.Property(e => e.Nombre).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Correo).IsRequired().HasMaxLength(150);
                 entity.Property(e => e.Rol).IsRequired().HasMaxLength(50);
 
-                entity.Property(e => e.PassWordHash).IsRequired().HasMaxLength(255);
+                entity.Property(e => e.PassWordHash).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.Activo)
+                      .IsRequired()
+                      .HasDefaultValue(true);
+
+                entity.Property(e => e.IntentosFallidos)
+                      .IsRequired()
+                      .HasDefaultValue(0);
+
+                entity.Property(e => e.BloqueoHasta)
+                      .IsRequired(false);
+
+                entity.Property(e => e.FechaRegistro)
+                      .IsRequired();
 
                 entity.HasMany(u => u.VuelosSeguidos)
                       .WithMany()
                       .UsingEntity<Dictionary<string, object>>(
-                          "UsuarioVueloSeguimiento", 
+                          "UsuarioVueloSeguimiento",
                           j => j.HasOne<Vuelo>().WithMany().HasForeignKey("VueloId"),
                           j => j.HasOne<Usuario>().WithMany().HasForeignKey("UsuarioId")
                       );

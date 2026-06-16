@@ -26,7 +26,6 @@ namespace SIV.Infrastructure.Persistence
         public async Task AgregarAsync(Usuario usuario)
         {
             await _context.Usuarios.AddAsync(usuario);
-            await _context.SaveChangesAsync();
         }
 
         public async Task<Usuario?> ObtenerPorIdConVuelosAsync(Guid usuarioId)
@@ -55,7 +54,6 @@ namespace SIV.Infrastructure.Persistence
                 };
 
                 await _context.Seguimientos.AddAsync(nuevoSeguimiento);
-                await _context.SaveChangesAsync();
             }
         }
 
@@ -68,7 +66,6 @@ namespace SIV.Infrastructure.Persistence
             {
                 seguimiento.FechaFin = DateTime.UtcNow;
                 seguimiento.Activo = false;
-                await _context.SaveChangesAsync(); 
             }
         }
 

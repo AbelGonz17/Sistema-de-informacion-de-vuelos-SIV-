@@ -11,10 +11,4 @@
         Retrasado,
         Adelantado
     }
-
-    public enum TipoEventoVuelo
-    {
-        CambioEstado,
-        CambioOperativo
-    }
 }

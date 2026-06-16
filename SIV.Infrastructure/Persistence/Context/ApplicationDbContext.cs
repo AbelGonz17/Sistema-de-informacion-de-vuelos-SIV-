@@ -78,6 +78,14 @@ namespace SIV.Infrastructure.Persistence
                 entity.Property(e => e.PassWordHash).IsRequired().HasMaxLength(255);
             });
 
+            modelBuilder.Entity<HistorialCambioOperativo>(entity =>
+            {
+                entity.Property(e => e.TipoCambio)
+                      .HasConversion<string>()
+                      .IsRequired()
+                      .HasMaxLength(50);
+            });
+
             modelBuilder.Entity<LogAuditoria>(entity =>
             {
                 entity.HasKey(e => e.Id);

@@ -6,9 +6,9 @@ namespace SIV.Domain.Entities
     {
         public Guid Id { get; private set; }
         public string NumeroVuelo { get; private set; }
-        public string Aerolinea { get; private set; }
-        public string Origen { get; private set; }
-        public string Destino { get; private set; }
+        public Guid Aerolinea { get; private set; }
+        public Guid Origen { get; private set; }
+        public Guid Destino { get; private set; }
         public DateTime HorarioPlanificadoSalida { get; private set; }
         public DateTime HorarioPlanificadoLlegada { get; private set; }
         public DateTime? HorarioEstimadoSalida { get; private set; }
@@ -16,13 +16,19 @@ namespace SIV.Domain.Entities
         public string Puerta { get; private set; }
         public string MotivoUltimoCambio { get; private set; }
         public EstadoVuelo EstadoActual { get; private set; }
+        public Aerolinea AerolineaRef { get; set; }
+        public Aeropuerto OrigenRef { get; set; }
+        public Aeropuerto DestinoRef { get; set; }
+
+        public IReadOnlyCollection<HistorialEstado> HistorialEstados { get; set; }
+        public IReadOnlyCollection<HistorialCambioOperativo> HistorialCambio { get; set; }
         private Vuelo() { }
 
         public Vuelo(Guid id,
             string numeroVuelo,
-            string aerolinea,
-            string origen,
-            string destino,
+            Guid aerolinea,
+            Guid origen,
+            Guid destino,
             DateTime horarioPlanificadoSalida,
             DateTime horarioPlanificadoLlegada,
             string puerta,

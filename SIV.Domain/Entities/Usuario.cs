@@ -1,4 +1,4 @@
-﻿namespace SIV.Domain.Entities
+namespace SIV.Domain.Entities
 {
     public class Usuario
     {
@@ -7,7 +7,8 @@
         public string Correo { get; private set; }
         public string Rol { get; private set; }
         public string PassWordHash { get; private set; }
-        public ICollection<Vuelo> VuelosSeguidos { get; private set; } 
+        public IReadOnlyCollection<Seguimiento> Seguimientos { get; set; }
+        public IReadOnlyCollection<Notificacion> Notificaciones { get; set; }
 
         private Usuario()
         {

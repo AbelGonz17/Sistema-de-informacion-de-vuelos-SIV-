@@ -26,15 +26,21 @@ namespace SIV.Infrastructure.Persistence
 
         public async Task<IEnumerable<Vuelo>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada)
         {
-            var query = _context.Vuelos.AsNoTracking();
+            var query = _context.Vuelos
+                .Include(v => v.AerolineaRef)
+                .Include(v => v.OrigenRef)
+                .Include(v => v.DestinoRef)
+                .AsNoTracking(); 
 
             if (esLlegada)
             {
-                query = query.Where(v => v.HorarioPlanificadoLlegada.Date == fecha.Date && v.Destino == "SDQ");
+                query = query.Where(v => v.HorarioPlanificadoLlegada.Date == fecha.Date
+                                      && v.DestinoRef.Pais == "SDQ"); 
             }
             else
             {
-                query = query.Where(v => v.HorarioPlanificadoSalida.Date == fecha.Date && v.Origen == "SDQ");
+                query = query.Where(v => v.HorarioPlanificadoSalida.Date == fecha.Date
+                                      && v.OrigenRef.Pais == "SDQ"); 
             }
 
             return await query.ToListAsync();
@@ -49,7 +55,7 @@ namespace SIV.Infrastructure.Persistence
             _context.Vuelos.Update(vuelo);
         }
 
-        public async Task<bool> ExisteVueloAsync(string numeroVuelo, string aerolinea, DateTime fecha, string origen, string destino)
+        public async Task<bool> ExisteVueloAsync(string numeroVuelo, Guid aerolinea, DateTime fecha, Guid origen, Guid destino)
         {
             return await _context.Vuelos
                 .AnyAsync(v => v.NumeroVuelo == numeroVuelo

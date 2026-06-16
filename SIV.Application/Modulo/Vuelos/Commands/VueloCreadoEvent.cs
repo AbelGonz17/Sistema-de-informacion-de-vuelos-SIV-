@@ -6,9 +6,9 @@ namespace SIV.Application.Modulo.Vuelos.Commands
     {
         public Guid VueloId { get; set; }
         public string NumeroVuelo { get; set; } = string.Empty;
-        public string Aerolinea { get; set; } = string.Empty;
-        public string Origen { get; set; } = string.Empty;
-        public string Destino { get; set; } = string.Empty;
+        public Guid Aerolinea { get; set; }
+        public Guid Origen { get; set; }
+        public Guid Destino { get; set; }
         public string Usuario { get; set; } = string.Empty;
     }
 }

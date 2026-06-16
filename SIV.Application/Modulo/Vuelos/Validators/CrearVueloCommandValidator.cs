@@ -12,17 +12,15 @@ namespace SIV.Application.Modulo.Vuelos.Validators
                 .MaximumLength(20).WithMessage("El número de vuelo no puede exceder los 20 caracteres.");
 
             RuleFor(c => c.Aerolinea)
-                .NotEmpty().WithMessage("La aerolínea es obligatoria.")
-                .MaximumLength(100).WithMessage("El nombre de la aerolínea es demasiado largo.");
+                .NotEmpty().WithMessage("La aerolínea es obligatoria.");
+
 
             RuleFor(c => c.Origen)
-                .NotEmpty().WithMessage("El aeropuerto de origen es requerido.")
-                .MaximumLength(4);
+                .NotEmpty().WithMessage("El aeropuerto de origen es requerido.");
 
             RuleFor(c => c.Destino)
                 .NotEmpty().WithMessage("El aeropuerto de destino es requerido.")
-                .NotEqual(c => c.Origen).WithMessage("El destino no puede ser igual al origen.")
-                .MaximumLength(4); 
+                .NotEqual(c => c.Origen).WithMessage("El destino no puede ser igual al origen.");
 
             RuleFor(c => c.HorarioPlanificadoSalida)
                 .NotEmpty().WithMessage("La hora de salida es obligatoria.")

@@ -12,7 +12,8 @@ namespace SIV.Domain.Entities
 
         private Usuario()
         {
-            VuelosSeguidos = new HashSet<Vuelo>();
+            Seguimientos = new List<Seguimiento>();
+            Notificaciones = new List<Notificacion>();
         }
 
         public Usuario(
@@ -27,7 +28,8 @@ namespace SIV.Domain.Entities
             Correo = correo;
             Rol = rol;
             PassWordHash = passWordHash;
-            VuelosSeguidos = new HashSet<Vuelo>();
+            Seguimientos = new List<Seguimiento>();
+            Notificaciones = new List<Notificacion>();
         }
     }
 }

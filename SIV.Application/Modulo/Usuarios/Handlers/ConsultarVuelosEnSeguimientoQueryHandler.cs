@@ -23,17 +23,17 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
             if (usuario == null)
                 return Result<IEnumerable<VueloDto>>.Failure("Usuario no encontrado", StatusCodes.Status404NotFound);
 
-            var listaDtos = usuario.VuelosSeguidos.Select(vuelo => new VueloDto
+            var listaDtos = usuario.Seguimientos.Select(seguimiento => new VueloDto
             {
-                Id = vuelo.Id,
-                NumeroVuelo = vuelo.NumeroVuelo,
-                Aerolinea = vuelo.Aerolinea,
-                Origen = vuelo.Origen,
-                Destino = vuelo.Destino,
-                HorarioPlanificadoSalida = vuelo.HorarioPlanificadoSalida,
-                HorarioEstimadoSalida = vuelo.HorarioEstimadoSalida,
-                Puerta = vuelo.Puerta,
-                EstadoActual = vuelo.EstadoActual.ToString()
+                Id = seguimiento.VueloId,
+                NumeroVuelo = seguimiento.Vuelo.NumeroVuelo,
+                Aerolinea = seguimiento.Vuelo.Aerolinea,
+                Origen = seguimiento.Vuelo.Origen,
+                Destino = seguimiento.Vuelo.Destino,
+                HorarioPlanificadoSalida = seguimiento.Vuelo.HorarioPlanificadoSalida,
+                HorarioEstimadoSalida = seguimiento.Vuelo.HorarioEstimadoSalida,
+                Puerta = seguimiento.Vuelo.Puerta,
+                EstadoActual = seguimiento.Vuelo.EstadoActual.ToString()
             }).ToList();
 
             return Result<IEnumerable<VueloDto>>.Success(listaDtos);

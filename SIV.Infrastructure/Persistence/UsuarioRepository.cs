@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
 
@@ -13,12 +13,12 @@ namespace SIV.Infrastructure.Persistence
             _context = context;
         }
 
-        public async Task<Usuario> ObtenerPorIdAsync(Guid id)
+        public async Task<Usuario?> ObtenerPorIdAsync(Guid id)
         {
             return await _context.Usuarios.FindAsync(id);
         }
 
-        public async Task<Usuario> ObtenerPorCorreoAsync(string correo)
+        public async Task<Usuario?> ObtenerPorCorreoAsync(string correo)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Correo == correo);
         }
@@ -33,43 +33,42 @@ namespace SIV.Infrastructure.Persistence
         {
             return await _context.Usuarios
                 .AsNoTracking() 
-                .Include(u => u.VuelosSeguidos)
+                .Include(u => u.Seguimientos.Where(s => s.Activo))
+                    .ThenInclude(s => s.Vuelo)
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 
         public async Task RegistrarSeguimientoAsync(Guid usuarioId, Guid vueloId)
         {
-            var usuario = await _context.Usuarios
-                .Include(u => u.VuelosSeguidos)
-                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+            var existe = await _context.Seguimientos
+                .AnyAsync(s => s.UsuarioId == usuarioId && s.VueloId == vueloId && s.Activo);
 
-            var vuelo = await _context.Vuelos.FindAsync(vueloId);
-
-            if (usuario != null && vuelo != null)
+            if (!existe)
             {
-                if (!usuario.VuelosSeguidos.Any(v => v.Id == vueloId))
+                var nuevoSeguimiento = new Seguimiento
                 {
-                    usuario.VuelosSeguidos.Add(vuelo);
-                    await _context.SaveChangesAsync();
-                }
+                    Id = Guid.NewGuid(),
+                    UsuarioId = usuarioId,
+                    VueloId = vueloId,
+                    FechaInicio = DateTime.UtcNow,
+                    Activo = true
+                };
+
+                await _context.Seguimientos.AddAsync(nuevoSeguimiento);
+                await _context.SaveChangesAsync();
             }
         }
 
         public async Task EliminarSeguimientoAsync(Guid usuarioId, Guid vueloId)
         {
-            var usuario = await _context.Usuarios
-                .Include(u => u.VuelosSeguidos)
-                .FirstOrDefaultAsync(u => u.Id == usuarioId);
+            var seguimiento = await _context.Seguimientos
+                .FirstOrDefaultAsync(s => s.UsuarioId == usuarioId && s.VueloId == vueloId && s.Activo);
 
-            if (usuario != null)
+            if (seguimiento != null)
             {
-                var vueloSeguido = usuario.VuelosSeguidos.FirstOrDefault(v => v.Id == vueloId);
-
-                if (vueloSeguido != null)
-                {
-                    usuario.VuelosSeguidos.Remove(vueloSeguido);
-                    await _context.SaveChangesAsync(); 
-                }
+                seguimiento.FechaFin = DateTime.UtcNow;
+                seguimiento.Activo = false;
+                await _context.SaveChangesAsync(); 
             }
         }
 
@@ -77,7 +76,7 @@ namespace SIV.Infrastructure.Persistence
         {
             return await _context.Usuarios
                  .AsNoTracking() 
-                 .Where(u => u.VuelosSeguidos.Any(v => v.Id == vueloId))
+                 .Where(u => _context.Seguimientos.Any(s => s.UsuarioId == u.Id && s.VueloId == vueloId && s.Activo))
                  .Select(u => u.Correo)
                  .ToListAsync();
         }

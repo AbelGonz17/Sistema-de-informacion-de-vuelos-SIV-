@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using SIV.Domain.Interfaces;
 using System.Security.Claims;
 
@@ -16,6 +16,16 @@ namespace SIV.Infrastructure.Security
         {
             var usuario = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
             return usuario ?? "Sistema_Local"; 
+        }
+
+        public Guid ObtenerIdUsuarioActual()
+        {
+            var idString = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (Guid.TryParse(idString, out var id))
+            {
+                return id;
+            }
+            return Guid.Empty; // Guid.Empty si es un proceso automático (background)
         }
 
         public string ObtenerRolUsuarioActual()

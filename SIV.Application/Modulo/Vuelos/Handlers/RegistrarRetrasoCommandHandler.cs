@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
@@ -30,7 +30,8 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             if (vuelo == null)
                 return Result<bool>.Failure("El vuelo especificado no existe.", StatusCodes.Status404NotFound);
 
-            vuelo.ActualizarHorarioEstimado(request.NuevaHoraSalida, request.Motivo);
+            var usuarioId = _seguridadService.ObtenerIdUsuarioActual();
+            vuelo.ActualizarHorarioEstimado(request.NuevaHoraSalida, request.Motivo, usuarioId);
 
             await _vueloRepository.ActualizarAsync(vuelo);
 

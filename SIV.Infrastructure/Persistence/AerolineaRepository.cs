@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SIV.Infrastructure.Persistence
 {
@@ -25,9 +23,26 @@ namespace SIV.Infrastructure.Persistence
             return await _context.Aerolineas.FirstOrDefaultAsync(a => a.Codigo == codigo);
         }
 
+        public async Task<Aerolinea?> ObtenerPorIdAsync(Guid id)
+        {
+            return await _context.Aerolineas.FirstOrDefaultAsync(a => a.Id == id);
+        }
+
         public async Task AgregarAsync(Aerolinea aerolinea)
         {
             await _context.Aerolineas.AddAsync(aerolinea);
+        }
+
+        public Task ActualizarAsync(Aerolinea aerolinea)
+        {
+            _context.Aerolineas.Update(aerolinea);
+            return Task.CompletedTask;
+        }
+
+        public Task EliminarAsync(Aerolinea aerolinea)
+        {
+            _context.Aerolineas.Remove(aerolinea);
+            return Task.CompletedTask;
         }
     }
 }

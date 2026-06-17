@@ -1,4 +1,4 @@
-﻿using SIV.Domain.Common;
+using SIV.Domain.Common;
 
 namespace SIV.Domain.Entities
 {
@@ -20,8 +20,12 @@ namespace SIV.Domain.Entities
         public Aeropuerto OrigenRef { get; set; }
         public Aeropuerto DestinoRef { get; set; }
 
-        public IReadOnlyCollection<HistorialEstado> HistorialEstados { get; set; }
-        public IReadOnlyCollection<HistorialCambioOperativo> HistorialCambio { get; set; }
+        private readonly List<HistorialEstado> _historialEstados = new();
+        private readonly List<HistorialCambioOperativo> _historialCambio = new();
+
+        public IReadOnlyCollection<HistorialEstado> HistorialEstados => _historialEstados.AsReadOnly();
+        public IReadOnlyCollection<HistorialCambioOperativo> HistorialCambio => _historialCambio.AsReadOnly();
+        
         private Vuelo() { }
 
         public Vuelo(Guid id,
@@ -46,7 +50,7 @@ namespace SIV.Domain.Entities
             MotivoUltimoCambio = motivoUltimoCambio;
         }
 
-        public void CambiarEstado(EstadoVuelo nuevoEstado, string motivo)
+        public void CambiarEstado(EstadoVuelo nuevoEstado, string motivo, Guid usuarioResponsable)
         {
             if (EstadoActual == EstadoVuelo.Cancelado)
                 throw new InvalidOperationException("Un vuelo en estado Cancelado es terminal e irreversible. No admite nuevos cambios.");
@@ -57,6 +61,18 @@ namespace SIV.Domain.Entities
             if (nuevoEstado == EstadoVuelo.EnVuelo && EstadoActual == EstadoVuelo.Programado)
                 throw new InvalidOperationException("Un vuelo no puede pasar a 'En Vuelo' sin haber pasado por el proceso de embarque.");
 
+            var historial = new HistorialEstado
+            {
+                Id = Guid.NewGuid(),
+                VueloId = this.Id,
+                EstadoAnterior = this.EstadoActual,
+                EstadoNuevo = nuevoEstado,
+                FechaHora = DateTime.UtcNow,
+                UsuarioResponsable = usuarioResponsable
+            };
+
+            _historialEstados.Add(historial);
+
             EstadoActual = nuevoEstado;
 
             if (!string.IsNullOrWhiteSpace(motivo))
@@ -65,7 +81,7 @@ namespace SIV.Domain.Entities
             }
         }
 
-        public void ActualizarHorarioEstimado(DateTime nuevaHoraSalida, string motivo)
+        public void ActualizarHorarioEstimado(DateTime nuevaHoraSalida, string motivo, Guid usuarioResponsable)
         {
             if (EstadoActual == EstadoVuelo.Cancelado || EstadoActual == EstadoVuelo.Completado)
                 throw new InvalidOperationException("No se pueden registrar cambios operativos en vuelos cerrados o cancelados.");
@@ -78,26 +94,56 @@ namespace SIV.Domain.Entities
             HorarioEstimadoSalida = nuevaHoraSalida;
             HorarioEstimadoLlegada = nuevaHoraSalida.Add(duracionVuelo);
         
+            string tipoCambio;
             if (nuevaHoraSalida > HorarioPlanificadoSalida)
             {
+                tipoCambio = "Retraso";
                 EstadoActual = EstadoVuelo.Retrasado;
             }
             else if (nuevaHoraSalida < HorarioPlanificadoSalida)
             {
+                tipoCambio = "Adelanto";
                 EstadoActual = EstadoVuelo.Adelantado; 
             }
             else
             {
+                tipoCambio = "Reprogramación";
                 EstadoActual = EstadoVuelo.Programado; 
             }
+
+            var historialCambio = new HistorialCambioOperativo
+            {
+                Id = Guid.NewGuid(),
+                VueloId = this.Id,
+                TipoCambio = tipoCambio,
+                Motivo = motivo,
+                DetalleCambio = $"Nuevo horario estimado de salida: {nuevaHoraSalida:O}",
+                FechaHora = DateTime.UtcNow,
+                UsuarioResponsable = usuarioResponsable
+            };
+
+            _historialCambio.Add(historialCambio);
 
             MotivoUltimoCambio = motivo;
         }
 
-        public void ActualizarPuerta(string nuevaPuerta, string motivo)
+        public void ActualizarPuerta(string nuevaPuerta, string motivo, Guid usuarioResponsable)
         {
             if (EstadoActual == EstadoVuelo.Cancelado || EstadoActual == EstadoVuelo.Completado)
                 throw new InvalidOperationException("No se puede cambiar la puerta de un vuelo cerrado o cancelado.");
+
+            var historialCambio = new HistorialCambioOperativo
+            {
+                Id = Guid.NewGuid(),
+                VueloId = this.Id,
+                TipoCambio = "Cambio de Puerta",
+                Motivo = string.IsNullOrWhiteSpace(motivo) ? "Cambio de puerta operativo" : motivo,
+                DetalleCambio = $"La puerta cambió de '{Puerta}' a '{nuevaPuerta}'",
+                FechaHora = DateTime.UtcNow,
+                UsuarioResponsable = usuarioResponsable
+            };
+
+            _historialCambio.Add(historialCambio);
 
             Puerta = nuevaPuerta;
 

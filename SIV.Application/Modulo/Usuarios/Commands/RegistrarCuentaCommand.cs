@@ -1,12 +1,9 @@
-﻿using MediatR;
+using MediatR;
+using SIV.Application.Common.Interfaces;
 using SIV.Domain.Common;
 
 namespace SIV.Application.Modulo.Usuarios.Commands
 {
-    public class RegistrarCuentaCommand : IRequest<Result<string>>
-    {
-        public string Nombre { get; set; } = string.Empty;
-        public string Correo { get; set; } = string.Empty;
-        public string Contrasena { get; set; } = string.Empty;
-    }
+    public record RegistrarCuentaCommand(string Nombre, string Correo, string Contrasena) 
+        : IRequest<Result<string>>, IComandoCatalogo;
 }

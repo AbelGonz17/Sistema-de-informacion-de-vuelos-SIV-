@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SIV.Infrastructure.Persistence
 {
@@ -20,9 +18,26 @@ namespace SIV.Infrastructure.Persistence
             return await _context.Aeropuertos.AsNoTracking().ToListAsync();
         }
 
+        public async Task<Aeropuerto?> ObtenerPorIdAsync(Guid id)
+        {
+            return await _context.Aeropuertos.FirstOrDefaultAsync(a => a.Id == id);
+        }
+
         public async Task AgregarAsync(Aeropuerto aeropuerto)
         {
             await _context.Aeropuertos.AddAsync(aeropuerto);
+        }
+
+        public Task ActualizarAsync(Aeropuerto aeropuerto)
+        {
+            _context.Aeropuertos.Update(aeropuerto);
+            return Task.CompletedTask;
+        }
+
+        public Task EliminarAsync(Aeropuerto aeropuerto)
+        {
+            _context.Aeropuertos.Remove(aeropuerto);
+            return Task.CompletedTask;
         }
     }
 }

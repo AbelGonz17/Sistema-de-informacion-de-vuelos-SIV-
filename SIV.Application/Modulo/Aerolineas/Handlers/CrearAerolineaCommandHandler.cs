@@ -3,10 +3,6 @@ using SIV.Application.Modulo.Aerolineas.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Aerolineas.Handlers
 {
@@ -21,7 +17,6 @@ namespace SIV.Application.Modulo.Aerolineas.Handlers
 
         public async Task<Result<Guid>> Handle(CrearAerolineaCommand request, CancellationToken cancellationToken)
         {
-            // Validar si la aerolinea ya existe
             var todas = await _aerolineaRepository.ObtenerTodasAsync();
             if (todas.Any(a => a.Codigo.Equals(request.Codigo, StringComparison.OrdinalIgnoreCase)))
             {

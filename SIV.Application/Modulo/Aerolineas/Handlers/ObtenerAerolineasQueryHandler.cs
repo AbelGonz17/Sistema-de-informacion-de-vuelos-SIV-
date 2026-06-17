@@ -2,10 +2,6 @@ using MediatR;
 using SIV.Application.Modulo.Aerolineas.DTOs;
 using SIV.Application.Modulo.Aerolineas.Queries;
 using SIV.Domain.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Aerolineas.Handlers
 {

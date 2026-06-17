@@ -1,12 +1,9 @@
-﻿using MediatR;
+using MediatR;
 using SIV.Application.Common.Interfaces;
 using SIV.Domain.Common;
 
 namespace SIV.Application.Modulo.Usuarios.Commands
 {
-    public class IniciarSeguimientoCommand : IRequest<Result<bool>>, IComandoOperativo
-    {
-        public Guid UsuarioId { get; set; }
-        public Guid VueloId { get; set; }
-    }
+    public record IniciarSeguimientoCommand(Guid UsuarioId, Guid VueloId) 
+        : IRequest<Result<bool>>, IComandoOperativo;
 }

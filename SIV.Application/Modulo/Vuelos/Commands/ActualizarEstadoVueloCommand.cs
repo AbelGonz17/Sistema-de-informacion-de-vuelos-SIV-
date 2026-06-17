@@ -1,13 +1,9 @@
-﻿using MediatR;
+using MediatR;
 using SIV.Application.Common.Interfaces;
 using SIV.Domain.Common;
 
 namespace SIV.Application.Modulo.Vuelos.Commands
 {
-    public class ActualizarEstadoVueloCommand : IRequest<Result<bool>>, IComandoOperativo
-    {
-        public Guid VueloId { get; set; }
-        public EstadoVuelo NuevoEstado { get; set; }
-        public string MotivoCambio { get; set; } = string.Empty;
-    }
+    public record ActualizarEstadoVueloCommand(Guid VueloId, EstadoVuelo NuevoEstado, string MotivoCambio) 
+        : IRequest<Result<bool>>, IComandoOperativo;
 }

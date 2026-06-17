@@ -25,7 +25,8 @@ namespace SIV.Application.Modulo.Aeropuertos.Handlers
             return aeropuertos.Select(a => new AeropuertoDto
             {
                 Id = a.Id,
-                Name = a.Name,
+                Codigo = a.Codigo,
+                Nombre = a.Nombre,
                 Pais = a.Pais
             });
         }

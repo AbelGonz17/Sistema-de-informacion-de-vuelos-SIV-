@@ -87,6 +87,16 @@ namespace SIV.Infrastructure.Persistence
                 entity.Property(e => e.Detalles).HasMaxLength(500);
                 entity.Property(e => e.FechaRegistro).IsRequired();
             });
+
+            modelBuilder.Entity<Notificacion>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Mensaje).IsRequired().HasMaxLength(500);
+                entity.Property(e => e.TipoEvento)
+                      .HasConversion<string>()
+                      .IsRequired()
+                      .HasMaxLength(50);
+            });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

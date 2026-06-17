@@ -11,5 +11,6 @@ namespace SIV.Domain.Interfaces
         Task AgregarAsync(Usuario usuario);
         Task ActualizarAsync(Usuario usuario);
         Task<IEnumerable<string>> ObtenerSeguidoresDeVueloAsync(Guid vueloId);
+        Task<IEnumerable<Guid>> ObtenerIdsSeguidoresDeVueloAsync(Guid vueloId);
     }
 }

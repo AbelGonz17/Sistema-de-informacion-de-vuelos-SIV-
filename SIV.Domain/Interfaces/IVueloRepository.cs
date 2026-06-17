@@ -1,4 +1,4 @@
-﻿using SIV.Domain.Entities;
+using SIV.Domain.Entities;
 
 namespace SIV.Domain.Interfaces
 {
@@ -10,5 +10,6 @@ namespace SIV.Domain.Interfaces
         Task AgregarAsync(Vuelo vuelo);
         Task ActualizarAsync(Vuelo vuelo);
         Task<bool> ExisteVueloAsync(string numeroVuelo, Guid aerolinea, DateTime fecha, Guid origen, Guid destino);
+        Task<(IEnumerable<Vuelo> Vuelos, int TotalCount)> ObtenerVuelosFidsPaginadosAsync(int pageNumber, int pageSize, bool? esLlegada, string? estado, Guid? aerolineaId, DateTime? fecha);
     }
 }

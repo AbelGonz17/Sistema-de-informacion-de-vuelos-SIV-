@@ -37,36 +37,19 @@ namespace SIV.Infrastructure.Persistence
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 
-        public async Task RegistrarSeguimientoAsync(Guid usuarioId, Guid vueloId)
+        public async Task<Usuario?> ObtenerParaModificacionAsync(Guid usuarioId)
         {
-            var existe = await _context.Seguimientos
-                .AnyAsync(s => s.UsuarioId == usuarioId && s.VueloId == vueloId && s.Activo);
-
-            if (!existe)
-            {
-                var nuevoSeguimiento = new Seguimiento
-                {
-                    Id = Guid.NewGuid(),
-                    UsuarioId = usuarioId,
-                    VueloId = vueloId,
-                    FechaInicio = DateTime.UtcNow,
-                    Activo = true
-                };
-
-                await _context.Seguimientos.AddAsync(nuevoSeguimiento);
-            }
+            return await _context.Usuarios
+                .Include(u => u.Seguimientos)
+                    .ThenInclude(s => s.Vuelo)
+                        .ThenInclude(v => v.AerolineaRef)
+                .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 
-        public async Task EliminarSeguimientoAsync(Guid usuarioId, Guid vueloId)
+        public Task ActualizarAsync(Usuario usuario)
         {
-            var seguimiento = await _context.Seguimientos
-                .FirstOrDefaultAsync(s => s.UsuarioId == usuarioId && s.VueloId == vueloId && s.Activo);
-
-            if (seguimiento != null)
-            {
-                seguimiento.FechaFin = DateTime.UtcNow;
-                seguimiento.Activo = false;
-            }
+            _context.Usuarios.Update(usuario);
+            return Task.CompletedTask;
         }
 
         public async Task<IEnumerable<string>> ObtenerSeguidoresDeVueloAsync(Guid vueloId)

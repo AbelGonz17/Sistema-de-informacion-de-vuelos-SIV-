@@ -60,5 +60,14 @@ namespace SIV.Infrastructure.Persistence
                  .Select(u => u.Correo)
                  .ToListAsync();
         }
+
+        public async Task<IEnumerable<Guid>> ObtenerIdsSeguidoresDeVueloAsync(Guid vueloId)
+        {
+            return await _context.Usuarios
+                 .AsNoTracking()
+                 .Where(u => _context.Seguimientos.Any(s => s.UsuarioId == u.Id && s.VueloId == vueloId && s.Activo))
+                 .Select(u => u.Id)
+                 .ToListAsync();
+        }
     }
 }

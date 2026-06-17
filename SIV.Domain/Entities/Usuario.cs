@@ -7,14 +7,13 @@ namespace SIV.Domain.Entities
         public string Correo { get; private set; }
         public string Rol { get; private set; }
         public string PassWordHash { get; private set; }
-        public IReadOnlyCollection<Seguimiento> Seguimientos { get; set; }
-        public IReadOnlyCollection<Notificacion> Notificaciones { get; set; }
+        private readonly List<Seguimiento> _seguimientos = new();
+        private readonly List<Notificacion> _notificaciones = new();
 
-        private Usuario()
-        {
-            Seguimientos = new List<Seguimiento>();
-            Notificaciones = new List<Notificacion>();
-        }
+        public IReadOnlyCollection<Seguimiento> Seguimientos => _seguimientos.AsReadOnly();
+        public IReadOnlyCollection<Notificacion> Notificaciones => _notificaciones.AsReadOnly();
+
+        private Usuario() { }
 
         public Usuario(
             Guid id, 
@@ -28,8 +27,32 @@ namespace SIV.Domain.Entities
             Correo = correo;
             Rol = rol;
             PassWordHash = passWordHash;
-            Seguimientos = new List<Seguimiento>();
-            Notificaciones = new List<Notificacion>();
+        }
+
+        public void IniciarSeguimiento(Vuelo vuelo)
+        {
+            var seguimientoActivo = _seguimientos.FirstOrDefault(s => s.VueloId == vuelo.Id && s.Activo);
+            if (seguimientoActivo == null)
+            {
+                _seguimientos.Add(new Seguimiento
+                {
+                    Id = Guid.NewGuid(),
+                    UsuarioId = this.Id,
+                    VueloId = vuelo.Id,
+                    FechaInicio = DateTime.UtcNow,
+                    Activo = true
+                });
+            }
+        }
+
+        public void DejarDeSeguir(Vuelo vuelo)
+        {
+            var seguimientoActivo = _seguimientos.FirstOrDefault(s => s.VueloId == vuelo.Id && s.Activo);
+            if (seguimientoActivo != null)
+            {
+                seguimientoActivo.Activo = false;
+                seguimientoActivo.FechaFin = DateTime.UtcNow;
+            }
         }
     }
 }

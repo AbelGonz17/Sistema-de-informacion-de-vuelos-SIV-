@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SIV.Application.Common.Interfaces;
 using SIV.Domain.Interfaces;
@@ -20,7 +20,7 @@ namespace SIV.Application.Common.Behaviors
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-            if (request is not IComandoOperativo)
+            if (request is not IComandoOperativo && request is not IComandoCatalogo)
             {
                 return await next();
             }

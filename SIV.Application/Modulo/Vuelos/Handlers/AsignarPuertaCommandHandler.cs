@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
@@ -32,7 +32,8 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 return Result<bool>.Failure("No se puede cambiar la puerta de un vuelo cerrado o cancelado.", StatusCodes.Status400BadRequest);
 
             string puertaAnterior = vuelo.Puerta;
-            vuelo.ActualizarPuerta(request.NuevaPuerta, request.MotivoCambio);
+            var usuarioId = _seguridadService.ObtenerIdUsuarioActual();
+            vuelo.ActualizarPuerta(request.NuevaPuerta, request.MotivoCambio, usuarioId);
 
             await _vueloRepository.ActualizarAsync(vuelo);
 

@@ -13,9 +13,8 @@ namespace SIV.Infrastructure.Persistence
         }
 
         public async Task RegistrarLogAsync(LogAuditoria log)
-            {
-                await _context.LogAuditorias.AddAsync(log);
-                await _context.SaveChangesAsync();
+        {
+            await _context.LogAuditorias.AddAsync(log);
         }
     }
 }

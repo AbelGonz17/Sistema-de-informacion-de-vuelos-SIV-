@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SIV.Domain.Interfaces;
@@ -18,6 +18,8 @@ namespace SIV.Infrastructure
             services.AddScoped<IVueloRepository, VueloRepository>();
             services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IAerolineaRepository, AerolineaRepository>();
+            services.AddScoped<IAeropuertoRepository, AeropuertoRepository>();
 
             services.AddScoped<INotificacionService, NotificacionService>();
             services.AddScoped<ISeguridadService, SeguridadService>();

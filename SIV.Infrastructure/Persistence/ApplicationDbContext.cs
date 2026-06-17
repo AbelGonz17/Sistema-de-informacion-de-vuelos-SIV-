@@ -34,7 +34,7 @@ namespace SIV.Infrastructure.Persistence
             modelBuilder.Entity<Aeropuerto>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Nombre).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Pais).IsRequired().HasMaxLength(100);
             });
 

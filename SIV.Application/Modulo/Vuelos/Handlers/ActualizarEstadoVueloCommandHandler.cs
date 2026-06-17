@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
@@ -27,13 +27,15 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             var vuelo = await _vueloRepository.ObtenerPorIdAsync(request.VueloId);
             if (vuelo == null) return Result<bool>.Failure("El vuelo no existe.", StatusCodes.Status404NotFound);
 
+            var usuarioId = _seguridadService.ObtenerIdUsuarioActual();
+
             if (request.NuevoEstado == EstadoVuelo.Retrasado)
             {
-                vuelo.ActualizarHorarioEstimado(DateTime.UtcNow.AddHours(1), request.MotivoCambio);
+                vuelo.ActualizarHorarioEstimado(DateTime.UtcNow.AddHours(1), request.MotivoCambio, usuarioId);
             }
             else
             {
-                vuelo.CambiarEstado(request.NuevoEstado, request.MotivoCambio);
+                vuelo.CambiarEstado(request.NuevoEstado, request.MotivoCambio, usuarioId);
             }
 
             await _vueloRepository.ActualizarAsync(vuelo);

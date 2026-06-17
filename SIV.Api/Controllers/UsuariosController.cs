@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Usuarios.Commands;
@@ -59,11 +59,10 @@ namespace SIV.Presentation.Controllers
             if (string.IsNullOrEmpty(usuarioIdClaim))
                 return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
 
-            var command = new IniciarSeguimientoCommand
-            {
-                UsuarioId = Guid.Parse(usuarioIdClaim),
-                VueloId = vueloId
-            };
+            var command = new IniciarSeguimientoCommand(
+                Guid.Parse(usuarioIdClaim),
+                vueloId
+            );
 
             var result = await _mediator.Send(command);
 
@@ -79,11 +78,10 @@ namespace SIV.Presentation.Controllers
             if (string.IsNullOrEmpty(usuarioIdClaim))
                 return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
 
-            var command = new DejarDeSeguirCommand
-            {
-                UsuarioId = Guid.Parse(usuarioIdClaim),
-                VueloId = vueloId
-            };
+            var command = new DejarDeSeguirCommand(
+                Guid.Parse(usuarioIdClaim),
+                vueloId
+            );
 
             var result = await _mediator.Send(command);
 

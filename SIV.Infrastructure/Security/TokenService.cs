@@ -15,7 +15,6 @@ namespace SIV.Infrastructure.Security
         {
             _configuration = configuration;
         }
-
         public string GenerarToken(Usuario usuario)
         {
             var claims = new List<Claim>

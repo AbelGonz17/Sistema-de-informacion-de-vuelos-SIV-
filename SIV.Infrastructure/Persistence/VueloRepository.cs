@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
 
@@ -63,6 +63,67 @@ namespace SIV.Infrastructure.Persistence
                             && v.HorarioPlanificadoSalida.Date == fecha.Date
                             && v.Origen == origen
                             && v.Destino == destino);
+        }
+
+        public async Task<(IEnumerable<Vuelo> Vuelos, int TotalCount)> ObtenerVuelosFidsPaginadosAsync(int pageNumber, int pageSize, bool? esLlegada, string? estado, Guid? aerolineaId, DateTime? fecha)
+        {
+            var query = _context.Vuelos
+                .Include(v => v.AerolineaRef)
+                .Include(v => v.OrigenRef)
+                .Include(v => v.DestinoRef)
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (fecha.HasValue)
+            {
+                if (esLlegada.HasValue && esLlegada.Value)
+                {
+                    query = query.Where(v => v.HorarioPlanificadoLlegada.Date == fecha.Value.Date);
+                }
+                else if (esLlegada.HasValue && !esLlegada.Value)
+                {
+                    query = query.Where(v => v.HorarioPlanificadoSalida.Date == fecha.Value.Date);
+                }
+                else
+                {
+                    query = query.Where(v => v.HorarioPlanificadoLlegada.Date == fecha.Value.Date || v.HorarioPlanificadoSalida.Date == fecha.Value.Date);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(estado) && Enum.TryParse<SIV.Domain.Common.EstadoVuelo>(estado, out var estadoEnum))
+            {
+                query = query.Where(v => v.EstadoActual == estadoEnum);
+            }
+
+            if (aerolineaId.HasValue && aerolineaId.Value != Guid.Empty)
+            {
+                query = query.Where(v => v.Aerolinea == aerolineaId.Value);
+            }
+
+            if (esLlegada.HasValue)
+            {
+                if (esLlegada.Value)
+                {
+                    query = query.OrderBy(v => v.HorarioPlanificadoLlegada);
+                }
+                else
+                {
+                    query = query.OrderBy(v => v.HorarioPlanificadoSalida);
+                }
+            }
+            else
+            {
+                query = query.OrderBy(v => v.HorarioPlanificadoSalida);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var vuelos = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (vuelos, totalCount);
         }
     }
 }

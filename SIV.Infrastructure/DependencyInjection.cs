@@ -21,6 +21,7 @@ namespace SIV.Infrastructure
             services.AddScoped<INotificacionRepository, NotificacionRepository>();
             services.AddScoped<IAerolineaRepository, AerolineaRepository>();
             services.AddScoped<IAeropuertoRepository, AeropuertoRepository>();
+            services.AddScoped<IReportesRepository, ReportesRepository>();
 
             services.AddScoped<INotificacionService, NotificacionService>();
             services.AddScoped<ISeguridadService, SeguridadService>();

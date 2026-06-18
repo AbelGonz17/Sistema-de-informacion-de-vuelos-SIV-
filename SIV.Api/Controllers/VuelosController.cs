@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Common.Mappings;
@@ -81,13 +81,28 @@ namespace SIV.Presentation.Controllers
             return BadRequest(result.ErrorMessage);
         }
 
-        [HttpGet("tablero")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VueloTableroDto>))]
+        [HttpGet("fids")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SIV.Application.Common.Models.PaginatedList<SIV.Application.Common.Mappings.VueloTableroDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<VueloTableroDto>>> ObtenerTablero([FromQuery] DateTime fecha, [FromQuery] bool esLlegada)
+        public async Task<ActionResult<SIV.Application.Common.Models.PaginatedList<SIV.Application.Common.Mappings.VueloTableroDto>>> ObtenerTableroFids(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 20,
+            [FromQuery] bool? esLlegada = null,
+            [FromQuery] string? estado = null,
+            [FromQuery] Guid? aerolineaId = null,
+            [FromQuery] DateTime? fecha = null)
         {
-            var query = new ConsultarTableroLlegadasQuery { Fecha = fecha, EsLlegada = esLlegada };
+            var query = new ConsultarTableroFidsQuery 
+            { 
+                PageNumber = pageNumber, 
+                PageSize = pageSize, 
+                EsLlegada = esLlegada, 
+                Estado = estado, 
+                AerolineaId = aerolineaId, 
+                Fecha = fecha 
+            };
+            
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)

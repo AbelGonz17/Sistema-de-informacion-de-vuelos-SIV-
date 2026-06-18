@@ -3,8 +3,6 @@ using SIV.Application.Modulo.Aeropuertos.DTOs;
 using SIV.Application.Modulo.Aeropuertos.Queries;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Aeropuertos.Handlers
 {

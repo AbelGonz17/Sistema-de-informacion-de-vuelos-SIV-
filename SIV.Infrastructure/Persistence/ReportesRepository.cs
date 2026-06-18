@@ -1,9 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SIV.Infrastructure.Persistence
 {

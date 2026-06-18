@@ -1,5 +1,3 @@
-using System;
-
 namespace SIV.Application.Modulo.Reportes.DTOs
 {
     public class VueloEstadoReporteDto

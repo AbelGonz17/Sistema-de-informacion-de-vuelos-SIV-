@@ -22,10 +22,10 @@ namespace SIV.Application.Modulo.Aerolineas.Handlers
                 return Result<bool>.Failure($"No se encontró la aerolínea con Id {request.Id}");
             }
 
-            var todas = await _aerolineaRepository.ObtenerTodasAsync();
-            if (todas.Any(a => a.Id != request.Id && a.Codigo.Equals(request.Codigo, StringComparison.OrdinalIgnoreCase)))
+            bool codigoDuplicado = await _aerolineaRepository.ExisteCodigoParaOtraAerolineaAsync(request.Id, request.Codigo);
+            if (codigoDuplicado)
             {
-                return Result<bool>.Failure($"Ya existe otra aerolínea con el código {request.Codigo}");
+                return Result<bool>.Failure($"Ya existe otra aerolínea registrada con el código {request.Codigo}.");
             }
 
             aerolinea.Codigo = request.Codigo;

@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {

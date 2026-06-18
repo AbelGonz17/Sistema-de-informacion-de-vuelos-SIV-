@@ -33,6 +33,12 @@ namespace SIV.Infrastructure.Persistence
             await _context.Aerolineas.AddAsync(aerolinea);
         }
 
+        public async Task<bool> ExisteCodigoParaOtraAerolineaAsync(Guid idActual, string codigo)
+        {
+            return await _context.Aerolineas
+                .AnyAsync(a => a.Id != idActual && a.Codigo.ToLower().Trim() == codigo.ToLower().Trim());
+        }
+
         public Task ActualizarAsync(Aerolinea aerolinea)
         {
             _context.Aerolineas.Update(aerolinea);

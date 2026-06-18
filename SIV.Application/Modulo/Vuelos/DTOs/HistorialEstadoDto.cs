@@ -1,5 +1,3 @@
-using System;
-
 namespace SIV.Application.Modulo.Vuelos.DTOs
 {
     public class HistorialEstadoDto

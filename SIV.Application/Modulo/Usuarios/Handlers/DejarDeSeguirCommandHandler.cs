@@ -5,7 +5,7 @@ using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
-    public class DejarDeSeguirCommandHandler : IRequestHandler<DejarDeSeguirCommand,Result<bool>>
+    public class DejarDeSeguirCommandHandler : IRequestHandler<DejarDeSeguirCommand, Result<bool>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IVueloRepository _vueloRepository;
@@ -31,4 +31,3 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
         }
     }
 }
-

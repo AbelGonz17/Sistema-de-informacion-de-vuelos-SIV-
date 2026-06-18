@@ -25,7 +25,7 @@ namespace SIV.Infrastructure.Security
             {
                 return id;
             }
-            return Guid.Empty; // Guid.Empty si es un proceso automático (background)
+            return Guid.Empty; 
         }
 
         public string ObtenerRolUsuarioActual()

@@ -87,5 +87,35 @@ namespace SIV.Presentation.Controllers
 
             return result.ToActionResult();
         }
+
+        [HttpGet("mis-notificaciones")]
+        [Authorize]
+        public async Task<IActionResult> ObtenerMisNotificaciones()
+        {
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(usuarioIdClaim))
+                return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
+
+            var query = new ConsultarNotificacionesUsuarioQuery(Guid.Parse(usuarioIdClaim));
+            var result = await _mediator.Send(query);
+
+            return result.ToActionResult();
+        }
+
+        [HttpPut("notificaciones/{id}/marcar-leida")]
+        [Authorize]
+        public async Task<IActionResult> MarcarNotificacionLeida(Guid id)
+        {
+            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(usuarioIdClaim))
+                return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
+
+            var command = new MarcarNotificacionLeidaCommand(id);
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult();
+        }
     }
 }

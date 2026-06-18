@@ -1,8 +1,6 @@
 using MediatR;
 using SIV.Application.Modulo.Reportes.DTOs;
 using SIV.Domain.Common;
-using System;
-using System.Collections.Generic;
 
 namespace SIV.Application.Modulo.Reportes.Queries
 {

@@ -2,7 +2,6 @@ using MediatR;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Common.Models;
 using SIV.Domain.Common;
-using System;
 
 namespace SIV.Application.Modulo.Vuelos.Queries
 {

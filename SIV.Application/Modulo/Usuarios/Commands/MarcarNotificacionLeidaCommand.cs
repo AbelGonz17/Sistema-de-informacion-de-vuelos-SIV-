@@ -1,6 +1,5 @@
 using MediatR;
 using SIV.Domain.Common;
-using System;
 
 namespace SIV.Application.Modulo.Usuarios.Commands
 {

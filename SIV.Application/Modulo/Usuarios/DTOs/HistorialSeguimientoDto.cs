@@ -1,5 +1,3 @@
-using System;
-
 namespace SIV.Application.Modulo.Usuarios.DTOs
 {
     public class HistorialSeguimientoDto

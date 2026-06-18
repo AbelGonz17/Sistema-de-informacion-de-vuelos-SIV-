@@ -2,8 +2,6 @@ using MediatR;
 using SIV.Application.Modulo.Aeropuertos.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Aeropuertos.Handlers
 {

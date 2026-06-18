@@ -18,16 +18,13 @@ namespace SIV.Application.Modulo.Aeropuertos.Handlers
         {
             var aeropuerto = await _aeropuertoRepository.ObtenerPorIdAsync(request.Id);
             if (aeropuerto == null)
-            {
                 return Result<bool>.Failure($"No se encontró el aeropuerto con Id {request.Id}");
-            }
+            
 
-            var todos = await _aeropuertoRepository.ObtenerTodosAsync();
-            if (todos.Any(a => a.Id != request.Id && a.Codigo.Equals(request.Codigo, StringComparison.OrdinalIgnoreCase)))
-            {
-                return Result<bool>.Failure($"Ya existe otro aeropuerto con el código {request.Codigo}");
-            }
-
+            bool codigoDuplicado = await _aeropuertoRepository.ExisteCodigoParaOtroAeropuertoAsync(request.Id, request.Codigo);
+            if (codigoDuplicado)    
+                return Result<bool>.Failure($"Ya existe otro aeropuerto registrado con el código {request.Codigo}.");
+            
             aeropuerto.Codigo = request.Codigo;
             aeropuerto.Nombre = request.Nombre;
             aeropuerto.Pais = request.Pais;

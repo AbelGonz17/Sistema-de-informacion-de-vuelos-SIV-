@@ -1,6 +1,4 @@
 using SIV.Domain.Entities;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SIV.Domain.Interfaces
 {
@@ -11,5 +9,6 @@ namespace SIV.Domain.Interfaces
         Task AgregarAsync(Aeropuerto aeropuerto);
         Task ActualizarAsync(Aeropuerto aeropuerto);
         Task EliminarAsync(Aeropuerto aeropuerto);
+        Task<bool> ExisteCodigoParaOtroAeropuertoAsync(Guid idActual, string codigo);
     }
 }

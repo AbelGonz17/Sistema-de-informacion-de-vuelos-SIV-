@@ -4,9 +4,6 @@ using SIV.Application.Modulo.Auditoria.DTOs;
 using SIV.Application.Modulo.Auditoria.Queries;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Auditoria.Handlers
 {

@@ -2,7 +2,6 @@ using MediatR;
 using SIV.Application.Common.Models;
 using SIV.Application.Modulo.Auditoria.DTOs;
 using SIV.Domain.Common;
-using System;
 
 namespace SIV.Application.Modulo.Auditoria.Queries
 {

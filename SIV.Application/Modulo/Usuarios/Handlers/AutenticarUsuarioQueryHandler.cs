@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Queries;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-using System.Net;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Reportes.DTOs;
 using SIV.Application.Modulo.Reportes.Queries;
 using SIV.Domain.Common;
-using System.Collections.Generic;
 
 namespace SIV.Presentation.Controllers
 {

@@ -1,5 +1,3 @@
-using System;
-
 namespace SIV.Application.Modulo.Aerolineas.DTOs
 {
     public class AerolineaDto

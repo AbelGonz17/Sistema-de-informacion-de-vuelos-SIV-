@@ -1,5 +1,3 @@
-using System;
-
 namespace SIV.Application.Modulo.Auditoria.DTOs
 {
     public class LogAuditoriaDto

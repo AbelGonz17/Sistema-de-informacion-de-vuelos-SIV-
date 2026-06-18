@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SIV.Application.Common.Models
 {
     public class PaginatedList<T>

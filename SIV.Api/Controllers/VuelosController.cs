@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Common.Mappings;
+using SIV.Application.Common.Models;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Application.Modulo.Vuelos.Queries;
 
@@ -83,9 +84,9 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("fids")]
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SIV.Application.Common.Models.PaginatedList<SIV.Application.Common.Mappings.VueloTableroDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedList<VueloTableroDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        public async Task<ActionResult<SIV.Application.Common.Models.PaginatedList<SIV.Application.Common.Mappings.VueloTableroDto>>> ObtenerTableroFids(
+        public async Task<ActionResult<PaginatedList<VueloTableroDto>>> ObtenerTableroFids(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 20,
             [FromQuery] bool? esLlegada = null,
@@ -93,16 +94,16 @@ namespace SIV.Presentation.Controllers
             [FromQuery] Guid? aerolineaId = null,
             [FromQuery] DateTime? fecha = null)
         {
-            var query = new ConsultarTableroFidsQuery 
-            { 
-                PageNumber = pageNumber, 
-                PageSize = pageSize, 
-                EsLlegada = esLlegada, 
-                Estado = estado, 
-                AerolineaId = aerolineaId, 
-                Fecha = fecha 
+            var query = new ConsultarTableroFidsQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                EsLlegada = esLlegada,
+                Estado = estado,
+                AerolineaId = aerolineaId,
+                Fecha = fecha
             };
-            
+
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
@@ -126,6 +127,35 @@ namespace SIV.Presentation.Controllers
                 return Ok(result.Value);
 
             return BadRequest(result);
+        }
+
+        [HttpPost("registrar-adelanto")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<ActionResult<bool>> RegistrarAdelanto([FromBody] RegistrarAdelantoCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.ErrorMessage);
+        }
+
+        [HttpGet("{id}/historial")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerHistorial(Guid id)
+        {
+            var query = new ObtenerHistorialVueloQuery(id);
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return NotFound(result.ErrorMessage);
         }
     }
 }

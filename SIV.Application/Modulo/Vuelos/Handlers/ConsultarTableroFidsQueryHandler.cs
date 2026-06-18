@@ -4,9 +4,6 @@ using SIV.Application.Common.Models;
 using SIV.Application.Modulo.Vuelos.Queries;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
 {

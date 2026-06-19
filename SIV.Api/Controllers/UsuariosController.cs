@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Application.Modulo.Usuarios.Queries;
 using SIV.Presentation.Common;
+using SIV.Domain.Common;
 using System.Security.Claims;
 
 namespace SIV.Presentation.Controllers
@@ -28,8 +29,19 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("registrar")]
+        [AllowAnonymous]
         public async Task<IActionResult> Registrar([FromBody] RegistrarCuentaCommand command)
         {
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult();
+        }
+
+        [HttpDelete("{id}/desactivar")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
+        public async Task<IActionResult> DesactivarUsuario(Guid id)
+        {
+            var command = new DesactivarUsuarioCommand(id);
             var result = await _mediator.Send(command);
 
             return result.ToActionResult();

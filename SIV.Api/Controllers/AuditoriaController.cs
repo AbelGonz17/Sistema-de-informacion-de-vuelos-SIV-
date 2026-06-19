@@ -10,7 +10,7 @@ namespace SIV.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RolesConstantes.Administrador)]
+    [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
     public class AuditoriaController : ControllerBase
     {
         private readonly IMediator _mediator;

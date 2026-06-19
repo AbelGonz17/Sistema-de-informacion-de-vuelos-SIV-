@@ -7,6 +7,7 @@ namespace SIV.Domain.Entities
         public string Correo { get; private set; }
         public string Rol { get; private set; }
         public string PassWordHash { get; private set; }
+        public bool Activo { get; private set; } = true;
         private readonly List<Seguimiento> _seguimientos = new();
         private readonly List<Notificacion> _notificaciones = new();
 
@@ -27,6 +28,12 @@ namespace SIV.Domain.Entities
             Correo = correo;
             Rol = rol;
             PassWordHash = passWordHash;
+            Activo = true;
+        }
+
+        public void Desactivar()
+        {
+            Activo = false;
         }
 
         public void IniciarSeguimiento(Vuelo vuelo)

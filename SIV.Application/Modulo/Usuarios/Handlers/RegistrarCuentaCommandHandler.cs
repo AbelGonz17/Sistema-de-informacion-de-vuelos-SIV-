@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Domain.Common;

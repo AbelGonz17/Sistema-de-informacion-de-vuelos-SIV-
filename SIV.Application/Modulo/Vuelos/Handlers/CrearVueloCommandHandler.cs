@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Common;
@@ -41,6 +41,9 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 );
             }
 
+            var usuarioId = _seguridadService.ObtenerIdUsuarioActual();
+            var usuarioNombre = _seguridadService.ObtenerUsarioActual();
+
             var nuevoVuelo = new Vuelo(
                 Guid.NewGuid(),
                 request.NumeroVuelo,
@@ -50,12 +53,11 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 request.HorarioPlanificadoSalida,
                 request.HorarioPlanificadoLlegada,
                 request.Puerta,
-                "Registro inicial del vuelo"
+                "Registro inicial del vuelo",
+                usuarioId
             );
 
             await _vueloRepository.AgregarAsync(nuevoVuelo);
-
-            var usuarioActual = _seguridadService.ObtenerUsarioActual();
 
             await _mediator.Publish(new VueloCreadoEvent
             {
@@ -64,7 +66,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 Aerolinea = nuevoVuelo.Aerolinea,
                 Origen = nuevoVuelo.Origen,
                 Destino = nuevoVuelo.Destino,
-                Usuario = usuarioActual
+                Usuario = usuarioNombre
             }, cancellationToken);
 
             return Result<Guid>.Success(nuevoVuelo.Id);

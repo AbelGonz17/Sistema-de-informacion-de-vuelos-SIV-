@@ -36,7 +36,8 @@ namespace SIV.Domain.Entities
             DateTime horarioPlanificadoSalida,
             DateTime horarioPlanificadoLlegada,
             string puerta,
-            string motivoUltimoCambio)
+            string motivoUltimoCambio,
+            Guid usuarioResponsable)
         {
             Id = id;
             NumeroVuelo = numeroVuelo;
@@ -48,6 +49,16 @@ namespace SIV.Domain.Entities
             Puerta = puerta;
             EstadoActual = EstadoVuelo.Programado;
             MotivoUltimoCambio = motivoUltimoCambio;
+
+            _historialEstados.Add(new HistorialEstado
+            {
+                Id = Guid.NewGuid(),
+                VueloId = this.Id,
+                EstadoAnterior = EstadoVuelo.Programado,
+                EstadoNuevo = EstadoVuelo.Programado,
+                FechaHora = DateTime.UtcNow,
+                UsuarioResponsable = usuarioResponsable
+            });
         }
 
         public void CambiarEstado(EstadoVuelo nuevoEstado, string motivo, Guid usuarioResponsable)

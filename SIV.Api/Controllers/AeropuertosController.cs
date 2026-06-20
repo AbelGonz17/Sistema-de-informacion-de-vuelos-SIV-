@@ -9,7 +9,7 @@ namespace SIV.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RolesConstantes.Administrador)]
+    [Authorize]
     public class AeropuertosController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,7 +20,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
         public async Task<IActionResult> ObtenerTodos()
         {
             var result = await _mediator.Send(new ObtenerAeropuertosQuery());
@@ -28,10 +28,10 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        [AllowAnonymous]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
         public async Task<IActionResult> ObtenerPorId(Guid id)
         {
-            var result = await _mediator.Send(new ObtenerAeropuertoPorIdQuery(id));
+            var result = await _mediator.Send(new ObtenerAeropuertoPorIdQuery(id)); 
 
             if (result != null)
                 return Ok(result);
@@ -40,6 +40,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = RolesConstantes.Administrador)]
         public async Task<IActionResult> Crear([FromBody] CrearAeropuertoCommand command)
         {
             var result = await _mediator.Send(command);
@@ -51,6 +52,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
         public async Task<IActionResult> Actualizar(Guid id, [FromBody] ActualizarAeropuertoCommand command)
         {
             command.Id = id;
@@ -63,6 +65,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
         public async Task<IActionResult> Eliminar(Guid id)
         {
             var result = await _mediator.Send(new EliminarAeropuertoCommand(id));

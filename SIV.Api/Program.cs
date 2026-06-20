@@ -27,10 +27,10 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
 
-        NameClaimType = "unique_name",
-        RoleClaimType = "role"
+        NameClaimType = System.Security.Claims.ClaimTypes.Name, 
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role  
     };
 
     options.Events = new JwtBearerEvents
@@ -39,7 +39,7 @@ builder.Services.AddAuthentication(options =>
         {
             Console.WriteLine($"Fallo de autenticación: {context.Exception.Message}");
             return Task.CompletedTask;
-        }
+        },     
     };
 });
 

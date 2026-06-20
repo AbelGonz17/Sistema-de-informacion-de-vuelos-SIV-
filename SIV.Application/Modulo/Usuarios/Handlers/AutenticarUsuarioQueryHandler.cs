@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Queries;
 using SIV.Domain.Common;
@@ -25,6 +25,9 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
 
             if (usuario == null)
                 return Result<string>.Failure("Las credenciales ingresadas son incorrectas.",StatusCodes.Status400BadRequest);
+
+            if (!usuario.Activo)
+                return Result<string>.Failure("La cuenta de usuario ha sido desactivada.", StatusCodes.Status403Forbidden);
 
             bool contraseñaValida = _passwordHasher.Verify(request.Contrasena, usuario.PassWordHash);
 

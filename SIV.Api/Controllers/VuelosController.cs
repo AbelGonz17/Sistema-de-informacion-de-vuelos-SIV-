@@ -5,6 +5,7 @@ using SIV.Application.Common.Mappings;
 using SIV.Application.Common.Models;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Application.Modulo.Vuelos.Queries;
+using SIV.Domain.Common;
 
 namespace SIV.Presentation.Controllers
 {
@@ -20,6 +21,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("registrar")]
+        [Authorize(Roles = RolesConstantes.Operador )]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -36,6 +38,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("actualizar-estado")]
+        [Authorize(Roles = RolesConstantes.Operador)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -52,6 +55,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("registrar-retraso")]
+        [Authorize(Roles = RolesConstantes.Operador)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -68,6 +72,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("asignar-puerta")]
+        [Authorize(Roles = RolesConstantes.Operador)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -113,6 +118,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpGet("buscar/{numeroVuelo}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -130,6 +136,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("registrar-adelanto")]
+        [Authorize(Roles = RolesConstantes.Operador)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
@@ -145,6 +152,7 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpGet("{id}/historial")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObtenerHistorial(Guid id)

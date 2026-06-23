@@ -19,7 +19,7 @@ namespace SIV.Infrastructure.Security
         {
             var claims = new List<Claim>
             {
-                new Claim("unique_name", usuario.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
                 new Claim(ClaimTypes.Name, usuario.Nombre),
                 new Claim(ClaimTypes.Email, usuario.Correo),
                 new Claim("role", usuario.Rol)

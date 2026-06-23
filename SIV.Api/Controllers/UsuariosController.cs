@@ -28,6 +28,18 @@ namespace SIV.Presentation.Controllers
             return result.ToActionResult();
         }
 
+        [HttpPost("Crear-interno")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
+        public async Task<IActionResult> CrearUsuarioInterno([FromBody] CrearUsuarioInternoCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.ErrorMessage);
+        }
+
         [HttpPost("registrar")]
         [AllowAnonymous]
         public async Task<IActionResult> Registrar([FromBody] RegistrarCuentaCommand command)

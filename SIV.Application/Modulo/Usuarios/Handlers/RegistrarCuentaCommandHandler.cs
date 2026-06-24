@@ -34,7 +34,7 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
                 Guid.NewGuid(),
                 request.Nombre,
                 request.Correo,
-                RolesConstantes.Administrador,
+                RolesConstantes.Visitante,
                 passwordHash);
 
             await _usuarioRepository.AgregarAsync(nuevoUsuario);

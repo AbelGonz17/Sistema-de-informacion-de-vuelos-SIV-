@@ -18,7 +18,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
 
         public async Task<Result<HistorialVueloDto>> Handle(ObtenerHistorialVueloQuery request, CancellationToken cancellationToken)
         {
-            var vuelo = await _vueloRepository.ObtenerPorIdAsync(request.VueloId);
+            var vuelo = await _vueloRepository.ObtenerPorIdConHistorialAsync(request.VueloId);
 
             if (vuelo == null)
             {

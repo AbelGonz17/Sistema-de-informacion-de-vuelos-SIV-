@@ -19,9 +19,9 @@ namespace SIV.Infrastructure.Security
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Name, usuario.Nombre),
-                new Claim(ClaimTypes.Email, usuario.Correo),
+                new Claim("sub", usuario.Id.ToString()), 
+                new Claim("name", usuario.Nombre),       
+                new Claim("email", usuario.Correo),
                 new Claim("role", usuario.Rol)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

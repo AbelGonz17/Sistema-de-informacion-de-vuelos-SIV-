@@ -29,6 +29,10 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             if (vuelo == null)
                 return Result<bool>.Failure("El vuelo especificado no existe.", StatusCodes.Status404NotFound);
 
+            var horaBase = vuelo.HorarioEstimadoSalida ?? vuelo.HorarioPlanificadoSalida;
+            if (request.NuevaHoraSalida <= horaBase)
+                return Result<bool>.Failure($"La nueva hora ({request.NuevaHoraSalida:HH:mm}) debe ser estrictamente posterior a la hora programada/estimada actual ({horaBase:HH:mm}) para registrarse como retraso.", StatusCodes.Status400BadRequest);
+
             var usuarioId = _seguridadService.ObtenerIdUsuarioActual();
             vuelo.ActualizarHorarioEstimado(request.NuevaHoraSalida, request.Motivo, usuarioId);
 

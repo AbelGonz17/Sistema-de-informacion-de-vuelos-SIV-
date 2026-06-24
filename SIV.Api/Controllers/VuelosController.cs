@@ -32,7 +32,7 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
             return BadRequest(result);
         }
@@ -49,7 +49,7 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
             return BadRequest(result);
         }
@@ -66,7 +66,7 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
             return BadRequest(result);
         }
@@ -82,9 +82,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpGet("fids")]
@@ -112,9 +112,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpGet("buscar/{numeroVuelo}")]
@@ -130,7 +130,7 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
             return BadRequest(result);
         }
@@ -146,9 +146,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpGet("{id}/historial")]
@@ -161,9 +161,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return NotFound(result.ErrorMessage);
+            return NotFound(result);
         }
     }
 }

@@ -46,9 +46,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpPut("{id}")]
@@ -59,9 +59,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpDelete("{id}")]
@@ -71,9 +71,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(new EliminarAeropuertoCommand(id));
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
     }
 }

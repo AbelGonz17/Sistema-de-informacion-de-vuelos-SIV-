@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SIV.Domain.Entities;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Infrastructure.Persistence
@@ -12,26 +13,35 @@ namespace SIV.Infrastructure.Persistence
             _context = context;
         }
 
-        public async Task<Dictionary<string, int>> ObtenerConteoVuelosPorEstadoAsync(DateTime? fechaInicio, DateTime? fechaFin)
+        public async Task<IEnumerable<Vuelo>> ObtenerVuelosPorRangoFechaAsync(DateTime fechaInicio, DateTime fechaFin)
         {
-            var query = _context.Vuelos.AsNoTracking().AsQueryable();
-
-            if (fechaInicio.HasValue)
-            {
-                query = query.Where(v => v.HorarioPlanificadoSalida >= fechaInicio.Value);
-            }
-
-            if (fechaFin.HasValue)
-            {
-                query = query.Where(v => v.HorarioPlanificadoSalida <= fechaFin.Value);
-            }
-
-            var group = await query
-                .GroupBy(v => v.EstadoActual)
-                .Select(g => new { Estado = g.Key, Conteo = g.Count() })
+            return await _context.Vuelos
+                .Include(v => v.AerolineaRef)
+                .Include(v => v.OrigenRef)
+                .Include(v => v.DestinoRef)
+                .AsNoTracking()
+                .Where(v => v.HorarioPlanificadoSalida >= fechaInicio && v.HorarioPlanificadoSalida <= fechaFin)
+                .OrderBy(v => v.HorarioPlanificadoSalida)
                 .ToListAsync();
+        }
 
-            return group.ToDictionary(g => g.Estado.ToString(), g => g.Conteo);
+        public async Task<IEnumerable<(HistorialCambioOperativo Cambio, string NumeroVuelo, string Operador)>> ObtenerCambiosOperativosAsync(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var query = from cambio in _context.HistorialCambiosOperativos
+                        join vuelo in _context.Vuelos on cambio.VueloId equals vuelo.Id
+                        join usuario in _context.Usuarios on cambio.UsuarioResponsable equals usuario.Id
+                        where cambio.FechaHora >= fechaInicio && cambio.FechaHora <= fechaFin
+                        orderby cambio.FechaHora descending
+                        select new
+                        {
+                            Cambio = cambio,
+                            NumeroVuelo = vuelo.NumeroVuelo,
+                            Operador = usuario.Nombre
+                        };
+
+            var resultados = await query.AsNoTracking().ToListAsync();
+
+            return resultados.Select(x => (x.Cambio, x.NumeroVuelo, x.Operador));
         }
 
         public async Task<IEnumerable<(Guid VueloId, string NumeroVuelo, int CantidadSeguidores)>> ObtenerTopVuelosMasSeguidosAsync(int top)
@@ -51,6 +61,15 @@ namespace SIV.Infrastructure.Persistence
                 .ToDictionaryAsync(v => v.Id, v => v.NumeroVuelo);
 
             return topSeguimientos.Select(x => (x.VueloId, vuelosDic.GetValueOrDefault(x.VueloId, "N/A"), x.Cantidad));
+        }
+
+        public async Task<int> ObtenerTotalUsuariosConSeguimientosActivosAsync()
+        {
+            return await _context.Seguimientos
+                .Where(s => s.Activo)
+                .Select(s => s.UsuarioId)
+                .Distinct()
+                .CountAsync();
         }
     }
 }

@@ -35,9 +35,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpPost("registrar")]

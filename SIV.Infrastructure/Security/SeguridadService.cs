@@ -14,13 +14,13 @@ namespace SIV.Infrastructure.Security
         }
         public string ObtenerUsarioActual()
         {
-            var usuario = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
+            var usuario = _httpContextAccessor.HttpContext?.User?.FindFirst("name")?.Value;
             return usuario ?? "Sistema_Local"; 
         }
 
         public Guid ObtenerIdUsuarioActual()
         {
-            var idString = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var idString = _httpContextAccessor.HttpContext?.User?.FindFirst("sub")?.Value;
             if (Guid.TryParse(idString, out var id))
             {
                 return id;

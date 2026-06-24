@@ -48,7 +48,7 @@ namespace SIV.Infrastructure.Persistence
 
         public Task ActualizarAsync(Usuario usuario)
         {
-            _context.Usuarios.Update(usuario);
+            // EF Core ya trackea al usuario cargado; Update rompe subentidades nuevas
             return Task.CompletedTask;
         }
 

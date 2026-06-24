@@ -1,9 +1,9 @@
 namespace SIV.Application.Modulo.Reportes.DTOs
 {
-    public class VueloEstadoReporteDto
+    public class ReporteSeguimientoDto
     {
-        public string Estado { get; set; } = string.Empty;
-        public int Cantidad { get; set; }
+        public int TotalUsuariosConSeguimientosActivos { get; set; }
+        public List<VueloMasSeguidoReporteDto> TopVuelosMasSeguidos { get; set; } = new();
     }
 
     public class VueloMasSeguidoReporteDto

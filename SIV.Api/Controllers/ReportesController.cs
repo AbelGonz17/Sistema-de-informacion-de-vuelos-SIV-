@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Vuelos.DTOs;
 using SIV.Application.Modulo.Vuelos.Queries;
+using SIV.Application.Modulo.Reportes.DTOs;
+using SIV.Application.Modulo.Reportes.Queries;
 using SIV.Domain.Common;
 using System.Threading.Tasks;
 
@@ -20,10 +22,11 @@ namespace SIV.Presentation.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("estadisticas")]
-        public async Task<ActionResult<EstadisticasVuelosDto>> ObtenerEstadisticasVuelos()
+        [HttpGet("operacion")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        public async Task<ActionResult<ReporteOperacionDto>> GenerarReporteOperacion([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin)
         {
-            var query = new ObtenerEstadisticasVuelosQuery();
+            var query = new GenerarReporteOperacionQuery(fechaInicio, fechaFin);
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
@@ -32,25 +35,30 @@ namespace SIV.Presentation.Controllers
             return BadRequest(result.ErrorMessage);
         }
 
-        [HttpGet("{id}/historial")]
-        // [Authorize(Roles = ...)] <--- Coméntalo temporalmente
-        public IActionResult GetHistorial(int id)
+        [HttpGet("cambios-operativos")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        public async Task<ActionResult<IEnumerable<ReporteCambioOperativoDto>>> GenerarReporteCambiosOperativos([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin)
         {
-            // 1. ¿Logró leer el token?
-            var autenticado = User.Identity?.IsAuthenticated ?? false;
+            var query = new GenerarReporteCambiosOperativosQuery(fechaInicio, fechaFin);
+            var result = await _mediator.Send(query);
 
-            // 2. ¿Detecta el rol?
-            var esAdmin = User.IsInRole("Administrador");
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
-            // 3. ¿Qué claims cargó en memoria?
-            var listaClaims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+            return BadRequest(result.ErrorMessage);
+        }
 
-            return Ok(new
-            {
-                EstaAutenticado = autenticado,
-                EsAdministrador = esAdmin,
-                ClaimsRecibidos = listaClaims
-            });
+        [HttpGet("seguimiento")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        public async Task<ActionResult<ReporteSeguimientoDto>> GenerarReporteSeguimiento([FromQuery] int top = 10)
+        {
+            var query = new GenerarReporteSeguimientoQuery(top);
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(result.ErrorMessage);
         }
     }
 }

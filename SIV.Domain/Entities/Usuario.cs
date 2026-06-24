@@ -43,7 +43,6 @@ namespace SIV.Domain.Entities
             {
                 _seguimientos.Add(new Seguimiento
                 {
-                    Id = Guid.NewGuid(),
                     UsuarioId = this.Id,
                     VueloId = vuelo.Id,
                     FechaInicio = DateTime.UtcNow,

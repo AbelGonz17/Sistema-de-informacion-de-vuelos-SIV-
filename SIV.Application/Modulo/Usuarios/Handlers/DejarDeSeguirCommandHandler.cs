@@ -9,11 +9,13 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IVueloRepository _vueloRepository;
+        private readonly IMediator _mediator;
 
-        public DejarDeSeguirCommandHandler(IUsuarioRepository usuarioRepository, IVueloRepository vueloRepository)
+        public DejarDeSeguirCommandHandler(IUsuarioRepository usuarioRepository, IVueloRepository vueloRepository, IMediator mediator)
         {
             _usuarioRepository = usuarioRepository;
             _vueloRepository = vueloRepository;
+            _mediator = mediator;
         }
 
         public async Task<Result<bool>> Handle(DejarDeSeguirCommand request, CancellationToken cancellationToken)
@@ -26,6 +28,13 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
 
             usuario.DejarDeSeguir(vuelo);
             await _usuarioRepository.ActualizarAsync(usuario);
+
+            await _mediator.Publish(new UsuarioSigueVueloEvent
+            {
+                CorreoUsuario = usuario.Correo,
+                NumeroVuelo = vuelo.NumeroVuelo,
+                Accion = "DejarDeSeguir"
+            }, cancellationToken);
 
             return Result<bool>.Success(true);
         }

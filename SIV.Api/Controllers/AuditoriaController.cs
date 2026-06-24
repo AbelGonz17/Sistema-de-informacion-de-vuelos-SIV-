@@ -43,9 +43,9 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
-                return Ok(result.Value);
+                return Ok(result);
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
 
         [HttpGet("exportar")]
@@ -69,7 +69,7 @@ namespace SIV.Presentation.Controllers
             if (result.IsSuccess)
                 return File(result.Value!, "text/csv", $"auditoria_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv");
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result);
         }
     }
 }

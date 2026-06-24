@@ -18,6 +18,15 @@ namespace SIV.Infrastructure.Persistence
             return await _context.Vuelos.FindAsync(Id);
         }
 
+        public async Task<Vuelo> ObtenerPorIdConHistorialAsync(Guid id)
+        {
+            return await _context.Vuelos
+                .Include(v => v.HistorialEstados)
+                .Include(v => v.HistorialCambio)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
         public async Task<Vuelo> ObtenerPorNumeroAsync(string numeroVuelo)
         {
             return await _context.Vuelos
@@ -50,9 +59,11 @@ namespace SIV.Infrastructure.Persistence
             await _context.Vuelos.AddAsync(vuelo);
         }
 
-        public async Task ActualizarAsync(Vuelo vuelo)
+        public Task ActualizarAsync(Vuelo vuelo)
         {
-            _context.Vuelos.Update(vuelo);
+            // EF Core ya está trackeando la entidad porque se obtuvo con FindAsync,
+            // llamar a Update() marca incorrectamente como "Modified" a las entidades recién agregadas (como HistorialEstado).
+            return Task.CompletedTask;
         }
 
         public async Task<bool> ExisteVueloAsync(string numeroVuelo, Guid aerolinea, DateTime fecha, Guid origen, Guid destino)
@@ -124,6 +135,11 @@ namespace SIV.Infrastructure.Persistence
                 .ToListAsync();
 
             return (vuelos, totalCount);
+        }
+
+        public async Task<IEnumerable<Vuelo>> ObtenerTodosAsync()
+        {
+            return await _context.Vuelos.AsNoTracking().ToListAsync();
         }
     }
 }

@@ -23,7 +23,6 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
 
             return Result<VueloDto>.Success(new VueloDto
             {
-                Id = vuelo.Id,
                 NumeroVuelo = vuelo.NumeroVuelo,
                 Aerolinea = vuelo.Aerolinea,
                 Origen = vuelo.Origen,

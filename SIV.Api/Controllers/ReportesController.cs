@@ -1,15 +1,16 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SIV.Application.Modulo.Reportes.DTOs;
-using SIV.Application.Modulo.Reportes.Queries;
+using SIV.Application.Modulo.Vuelos.DTOs;
+using SIV.Application.Modulo.Vuelos.Queries;
 using SIV.Domain.Common;
+using System.Threading.Tasks;
 
 namespace SIV.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = RolesConstantes.Administrador)]
+    //[Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
     public class ReportesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,20 +20,10 @@ namespace SIV.Presentation.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("estados")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VueloEstadoReporteDto>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<VueloEstadoReporteDto>>> ObtenerPorEstado(
-            [FromQuery] DateTime? fechaInicio = null,
-            [FromQuery] DateTime? fechaFin = null)
+        [HttpGet("estadisticas")]
+        public async Task<ActionResult<EstadisticasVuelosDto>> ObtenerEstadisticasVuelos()
         {
-            var query = new ObtenerReporteVuelosPorEstadoQuery
-            {
-                FechaInicio = fechaInicio,
-                FechaFin = fechaFin
-            };
-
+            var query = new ObtenerEstadisticasVuelosQuery();
             var result = await _mediator.Send(query);
 
             if (result.IsSuccess)
@@ -41,24 +32,25 @@ namespace SIV.Presentation.Controllers
             return BadRequest(result.ErrorMessage);
         }
 
-        [HttpGet("top-seguimientos")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VueloMasSeguidoReporteDto>))]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
-        public async Task<ActionResult<IEnumerable<VueloMasSeguidoReporteDto>>> ObtenerTopSeguimientos(
-            [FromQuery] int top = 10)
+        [HttpGet("{id}/historial")]
+        // [Authorize(Roles = ...)] <--- Coméntalo temporalmente
+        public IActionResult GetHistorial(int id)
         {
-            var query = new ObtenerReporteVuelosMasSeguidosQuery
+            // 1. ¿Logró leer el token?
+            var autenticado = User.Identity?.IsAuthenticated ?? false;
+
+            // 2. ¿Detecta el rol?
+            var esAdmin = User.IsInRole("Administrador");
+
+            // 3. ¿Qué claims cargó en memoria?
+            var listaClaims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
+
+            return Ok(new
             {
-                Top = top
-            };
-
-            var result = await _mediator.Send(query);
-
-            if (result.IsSuccess)
-                return Ok(result.Value);
-
-            return BadRequest(result.ErrorMessage);
+                EstaAutenticado = autenticado,
+                EsAdministrador = esAdmin,
+                ClaimsRecibidos = listaClaims
+            });
         }
     }
 }

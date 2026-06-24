@@ -29,21 +29,19 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
 
-        NameClaimType = System.Security.Claims.ClaimTypes.Name, 
-        RoleClaimType = System.Security.Claims.ClaimTypes.Role  
+        NameClaimType = "name", 
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role
     };
 
     options.Events = new JwtBearerEvents
     {
         OnAuthenticationFailed = context =>
         {
-            Console.WriteLine($"Fallo de autenticaciÛn: {context.Exception.Message}");
+            Console.WriteLine($"Fallo de autenticaci√≥n: {context.Exception.Message}");
             return Task.CompletedTask;
         },     
     };
 });
-
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -83,6 +81,8 @@ builder.Services.AddInfrastructureServices(builder.Configuration);
 
 var app = builder.Build();
 
+app.UseMiddleware<SIV.Api.Middleware.GlobalExceptionMiddleware>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -109,11 +109,13 @@ using (var scope = app.Services.CreateScope())
         {
             await context.Database.MigrateAsync();
         }
+
+        await SIV.Infrastructure.Persistence.DatabaseSeeder.SeedAsync(context);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "OcurriÛ un error al aplicar las migraciones autom·ticas en Docker.");
+        logger.LogError(ex, "Ocurri√≥ un error al aplicar las migraciones autom√°ticas en Docker.");
     }
 }
 

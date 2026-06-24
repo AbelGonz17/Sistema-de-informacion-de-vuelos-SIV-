@@ -25,7 +25,6 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
 
             var listaDtos = usuario.Seguimientos.Select(seguimiento => new VueloDto
             {
-                Id = seguimiento.VueloId,
                 NumeroVuelo = seguimiento.Vuelo.NumeroVuelo,
                 Aerolinea = seguimiento.Vuelo.Aerolinea,
                 Origen = seguimiento.Vuelo.Origen,

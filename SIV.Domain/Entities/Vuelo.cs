@@ -74,7 +74,6 @@ namespace SIV.Domain.Entities
 
             var historial = new HistorialEstado
             {
-                Id = Guid.NewGuid(),
                 VueloId = this.Id,
                 EstadoAnterior = this.EstadoActual,
                 EstadoNuevo = nuevoEstado,
@@ -124,7 +123,6 @@ namespace SIV.Domain.Entities
 
             var historialCambio = new HistorialCambioOperativo
             {
-                Id = Guid.NewGuid(),
                 VueloId = this.Id,
                 TipoCambio = tipoCambio,
                 Motivo = motivo,
@@ -145,7 +143,6 @@ namespace SIV.Domain.Entities
 
             var historialCambio = new HistorialCambioOperativo
             {
-                Id = Guid.NewGuid(),
                 VueloId = this.Id,
                 TipoCambio = "Cambio de Puerta",
                 Motivo = string.IsNullOrWhiteSpace(motivo) ? "Cambio de puerta operativo" : motivo,

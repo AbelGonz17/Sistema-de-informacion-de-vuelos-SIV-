@@ -12,5 +12,15 @@ namespace SIV.Application.Modulo.Vuelos.Commands
         DateTime HorarioPlanificadoSalida, 
         DateTime HorarioPlanificadoLlegada, 
         string Puerta
-    ) : IRequest<Result<Guid>>, IComandoCatalogo;
+    ) : IRequest<Result<Guid>>, IComandoCatalogo, IAuditableCommand
+    {
+        public string ObtenerMensajeAuditoria(object response)
+        {
+            if (response is Result<Guid> result && result.IsSuccess)
+            {
+                return $"Se programó exitosamente el nuevo vuelo {NumeroVuelo} (ID: {result.Value}).";
+            }
+            return $"Intento de registrar el vuelo {NumeroVuelo} no fue completado.";
+        }
+    }
 }

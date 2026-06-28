@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using SIV.Application.Common.Behaviors;
@@ -12,6 +12,7 @@ namespace SIV.Application
         {
             services.AddMediatR(cfg => {
                 cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(AuditoriaBehavior<,>));
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidacionOperativaBehavior<,>));
                 cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidacionBehavior<,>));
             });

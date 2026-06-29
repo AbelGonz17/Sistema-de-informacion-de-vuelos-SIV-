@@ -24,6 +24,11 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
                 return Result<bool>.Failure("Notificación no encontrada.", StatusCodes.Status404NotFound);
             }
 
+            if (notificacion.UsuarioDestinatarioId != request.UsuarioId)
+            {
+                return Result<bool>.Failure("No tienes permiso para marcar esta notificación como leída.", StatusCodes.Status403Forbidden);
+            }
+
             if (!notificacion.FueLeida)
             {
                 notificacion.FueLeida = true;

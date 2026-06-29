@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Application.Modulo.Usuarios.Queries;
-using SIV.Presentation.Common;
 using SIV.Domain.Common;
 using System.Security.Claims;
+using SIV.Application.Common.Mappings;
+using SIV.Application.Modulo.Usuarios.DTOs;
 
 namespace SIV.Presentation.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsuariosController : ControllerBase
+    public class UsuariosController : ApiControllerBase
     {
         private readonly IMediator _mediator;
 
@@ -21,125 +22,157 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] AutenticarUsuarioQuery query)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<string>> Login([FromBody] AutenticarUsuarioQuery query)
         {
             var result = await _mediator.Send(query);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("Crear-interno")]
+        [HttpPost("crear-interno")]
         [Authorize(Roles = RolesConstantes.Administrador)]
-        public async Task<IActionResult> CrearUsuarioInterno([FromBody] CrearUsuarioInternoCommand command)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<string>> CrearUsuarioInterno([FromBody] CrearUsuarioInternoCommand command)
         {
             var result = await _mediator.Send(command);
 
-            if (result.IsSuccess)
-                return Ok(result);
-
-            return BadRequest(result);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpPost("registrar")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Registrar([FromBody] RegistrarCuentaCommand command)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<string>> Registrar([FromBody] RegistrarCuentaCommand command)
         {
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpDelete("{id}/desactivar")]
         [Authorize(Roles = RolesConstantes.Administrador)]
-        public async Task<IActionResult> DesactivarUsuario(Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> DesactivarUsuario(Guid id)
         {
             var command = new DesactivarUsuarioCommand(id);
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpGet("mis-seguimientos")]
         [Authorize]
-        public async Task<IActionResult> ObtenerMisSeguimientos()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VueloDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<IEnumerable<VueloDto>>> ObtenerMisSeguimientos()
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (UsuarioId == Guid.Empty) 
+                return Unauthorized();
 
-            if (string.IsNullOrEmpty(usuarioIdClaim))
-                return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
-
-            var query = new ConsultarVuelosEnSeguimientoQuery { UsuarioId = Guid.Parse(usuarioIdClaim) };
+            var query = new ConsultarVuelosEnSeguimientoQuery(UsuarioId);
             var result = await _mediator.Send(query);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
-        [HttpPost("seguir")]
+        [HttpPost("seguimientos/{vueloId}")]
         [Authorize]
-        public async Task<IActionResult> IniciarSeguimiento([FromQuery] Guid vueloId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> IniciarSeguimiento(Guid vueloId)
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(usuarioIdClaim))
+            if (UsuarioId == Guid.Empty)
                 return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
 
             var command = new IniciarSeguimientoCommand(
-                Guid.Parse(usuarioIdClaim),
+                UsuarioId,
                 vueloId
             );
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
-        [HttpDelete("dejar-de-seguir")]
+        [HttpDelete("seguimientos/{vueloId}")]
         [Authorize]
-        public async Task<IActionResult> DejarDeSeguir([FromQuery] Guid vueloId)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> DejarDeSeguir(Guid vueloId)
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(usuarioIdClaim))
+            if (UsuarioId == Guid.Empty)
                 return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
 
             var command = new DejarDeSeguirCommand(
-                Guid.Parse(usuarioIdClaim),
+                UsuarioId,
                 vueloId
             );
 
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
         [HttpGet("mis-notificaciones")]
         [Authorize]
-        public async Task<IActionResult> ObtenerMisNotificaciones()
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<NotificacionDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<IEnumerable<NotificacionDto>>> ObtenerMisNotificaciones()
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (UsuarioId == Guid.Empty)
+                return Unauthorized();        
 
-            if (string.IsNullOrEmpty(usuarioIdClaim))
-                return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
-
-            var query = new ConsultarNotificacionesUsuarioQuery(Guid.Parse(usuarioIdClaim));
+            var query = new ConsultarNotificacionesUsuarioQuery(UsuarioId);
             var result = await _mediator.Send(query);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+               
         }
 
         [HttpPut("notificaciones/{id}/marcar-leida")]
         [Authorize]
-        public async Task<IActionResult> MarcarNotificacionLeida(Guid id)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> MarcarNotificacionLeida(Guid id)
         {
-            var usuarioIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (UsuarioId == Guid.Empty)
+                return Unauthorized();    
 
-            if (string.IsNullOrEmpty(usuarioIdClaim))
-                return Unauthorized(new { error = "Identificación de usuario inválida o ausente en el token." });
-
-            var command = new MarcarNotificacionLeidaCommand(id);
+            var command = new MarcarNotificacionLeidaCommand(id, UsuarioId);
             var result = await _mediator.Send(command);
 
-            return result.ToActionResult();
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
     }
 }

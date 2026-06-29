@@ -16,6 +16,7 @@ namespace SIV.Infrastructure.Persistence
         public async Task<IEnumerable<Vuelo>> ObtenerVuelosPorRangoFechaAsync(DateTime fechaInicio, DateTime fechaFin)
         {
             return await _context.Vuelos
+                .IgnoreQueryFilters()
                 .Include(v => v.AerolineaRef)
                 .Include(v => v.OrigenRef)
                 .Include(v => v.DestinoRef)
@@ -28,8 +29,8 @@ namespace SIV.Infrastructure.Persistence
         public async Task<IEnumerable<(HistorialCambioOperativo Cambio, string NumeroVuelo, string Operador)>> ObtenerCambiosOperativosAsync(DateTime fechaInicio, DateTime fechaFin)
         {
             var query = from cambio in _context.HistorialCambiosOperativos
-                        join vuelo in _context.Vuelos on cambio.VueloId equals vuelo.Id
-                        join usuario in _context.Usuarios on cambio.UsuarioResponsable equals usuario.Id
+                        join vuelo in _context.Vuelos.IgnoreQueryFilters() on cambio.VueloId equals vuelo.Id
+                        join usuario in _context.Usuarios.IgnoreQueryFilters() on cambio.UsuarioResponsable equals usuario.Id
                         where cambio.FechaHora >= fechaInicio && cambio.FechaHora <= fechaFin
                         orderby cambio.FechaHora descending
                         select new
@@ -57,6 +58,7 @@ namespace SIV.Infrastructure.Persistence
             var vueloIds = topSeguimientos.Select(x => x.VueloId).ToList();
 
             var vuelosDic = await _context.Vuelos
+                .IgnoreQueryFilters()
                 .Where(v => vueloIds.Contains(v.Id))
                 .ToDictionaryAsync(v => v.Id, v => v.NumeroVuelo);
 

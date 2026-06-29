@@ -42,7 +42,7 @@ namespace SIV.Infrastructure.Persistence
 
         public Task EliminarAsync(Aeropuerto aeropuerto)
         {
-            _context.Aeropuertos.Remove(aeropuerto);
+            aeropuerto.Desactivar();
             return Task.CompletedTask;
         }
     }

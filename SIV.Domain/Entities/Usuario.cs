@@ -1,6 +1,8 @@
+using SIV.Domain.Interfaces;
+
 namespace SIV.Domain.Entities
 {
-    public class Usuario
+    public class Usuario : ISoftDeletable
     {
         public Guid Id { get; private set; }
         public string Nombre { get; private set; }

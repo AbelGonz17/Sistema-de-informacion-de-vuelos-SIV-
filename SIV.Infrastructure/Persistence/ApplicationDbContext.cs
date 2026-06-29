@@ -97,6 +97,12 @@ namespace SIV.Infrastructure.Persistence
                       .IsRequired()
                       .HasMaxLength(50);
             });
+
+            // Filtros Globales para Soft Delete (Opción 2)
+            modelBuilder.Entity<Usuario>().HasQueryFilter(x => x.Activo);
+            modelBuilder.Entity<Aerolinea>().HasQueryFilter(x => x.Activo);
+            modelBuilder.Entity<Aeropuerto>().HasQueryFilter(x => x.Activo);
+            modelBuilder.Entity<Vuelo>().HasQueryFilter(x => x.Activo);
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

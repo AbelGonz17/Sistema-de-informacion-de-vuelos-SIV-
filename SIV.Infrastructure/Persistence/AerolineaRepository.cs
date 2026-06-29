@@ -47,7 +47,7 @@ namespace SIV.Infrastructure.Persistence
 
         public Task EliminarAsync(Aerolinea aerolinea)
         {
-            _context.Aerolineas.Remove(aerolinea);
+            aerolinea.Desactivar();
             return Task.CompletedTask;
         }
     }

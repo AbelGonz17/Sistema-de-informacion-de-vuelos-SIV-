@@ -1,9 +1,17 @@
-﻿namespace SIV.Domain.Entities
+using SIV.Domain.Interfaces;
+
+namespace SIV.Domain.Entities
 {
-    public class Aerolinea
+    public class Aerolinea : ISoftDeletable
     {
         public Guid Id { get; set; }
         public string Codigo { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
+        public bool Activo { get; private set; } = true;
+
+        public void Desactivar()
+        {
+            Activo = false;
+        }
     }
 }

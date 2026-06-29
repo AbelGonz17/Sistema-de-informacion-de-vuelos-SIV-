@@ -1,8 +1,9 @@
 using SIV.Domain.Common;
+using SIV.Domain.Interfaces;
 
 namespace SIV.Domain.Entities
 {
-    public class Vuelo
+    public class Vuelo : ISoftDeletable
     {
         public Guid Id { get; private set; }
         public string NumeroVuelo { get; private set; }
@@ -19,6 +20,7 @@ namespace SIV.Domain.Entities
         public Aerolinea AerolineaRef { get; set; }
         public Aeropuerto OrigenRef { get; set; }
         public Aeropuerto DestinoRef { get; set; }
+        public bool Activo { get; private set; } = true;
 
         private readonly List<HistorialEstado> _historialEstados = new();
         private readonly List<HistorialCambioOperativo> _historialCambio = new();
@@ -59,6 +61,11 @@ namespace SIV.Domain.Entities
                 FechaHora = DateTime.UtcNow,
                 UsuarioResponsable = usuarioResponsable
             });
+        }
+
+        public void Desactivar()
+        {
+            Activo = false;
         }
 
         public void CambiarEstado(EstadoVuelo nuevoEstado, string motivo, Guid usuarioResponsable)

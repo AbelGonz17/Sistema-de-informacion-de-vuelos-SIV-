@@ -1,0 +1,24 @@
+info:
+  name: RegistrarUsuariointerno
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Usuarios/Crear-interno
+  body:
+    type: json
+    data: |-
+      {
+        "nombre": "string",
+        "correoElectronico": "string",
+        "contrasena": "string",
+        "rol": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

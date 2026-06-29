@@ -1,0 +1,21 @@
+info:
+  name: SeguirVuelo
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Usuarios/seguir?vueloId=4E37A3FE-DDA5-4B47-B0B7-09A9F017EFAC
+  params:
+    - name: vueloId
+      value: 4E37A3FE-DDA5-4B47-B0B7-09A9F017EFAC
+      type: query
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMjE4OTMzNy1kOTBhLTQ5ZmQtYjdhMi1mMTJkZGQ3YWEwZDEiLCJuYW1lIjoiTWFyaWEgRmVsaXgiLCJlbWFpbCI6Im1hcmlhQGhvdG1haWwuY29tIiwicm9sZSI6IlZpc2l0YW50ZSIsImV4cCI6MTc4Mjc2ODgyNiwiaXNzIjoiU0lWX0JhY2tlbmQiLCJhdWQiOiJTSVZfRnJvbnRFbmQifQ.JVHCs_c_Vgz9m5Qnvc9DTcJnWG1wCEOl_tNM7tfsWwA
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

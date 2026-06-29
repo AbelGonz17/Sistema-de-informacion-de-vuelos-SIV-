@@ -1,0 +1,15 @@
+info:
+  name: EliminarAeropuerto
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: https://localhost:7273/api/Aeropuertos/3f3b149c-8b83-492a-b677-742f36f6db6a
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

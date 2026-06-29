@@ -1,0 +1,15 @@
+info:
+  name: MarcarNotificacionLeida
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: https://localhost:7273/api/Usuarios/notificaciones/c9a646d3-9c61-4cd9-bc11-ae9709d6d1d2/marcar-leida
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

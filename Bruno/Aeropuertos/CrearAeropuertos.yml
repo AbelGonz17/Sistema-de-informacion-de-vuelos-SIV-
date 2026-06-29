@@ -1,0 +1,23 @@
+info:
+  name: CrearAeropuertos
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Aeropuertos
+  body:
+    type: json
+    data: |-
+      {
+        "codigo": "string",
+        "nombre": "string",
+        "pais": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,23 @@
+info:
+  name: RegistrarUsarioPublico
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Usuarios/registrar
+  body:
+    type: json
+    data: |-
+      {
+        "nombre": "string",
+        "correo": "string",
+        "contrasena": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

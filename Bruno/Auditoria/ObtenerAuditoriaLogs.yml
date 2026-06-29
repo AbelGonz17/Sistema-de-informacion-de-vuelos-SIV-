@@ -1,0 +1,34 @@
+info:
+  name: ObtenerAuditoriaLogs
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: https://localhost:7273/api/Auditoria/logs?pageNumber=1&pageSize=20
+  params:
+    - name: pageNumber
+      value: "1"
+      type: query
+    - name: pageSize
+      value: "20"
+      type: query
+    - name: fechaInicio
+      value: ""
+      type: query
+      disabled: true
+    - name: fechaFin
+      value: ""
+      type: query
+      disabled: true
+    - name: accion
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

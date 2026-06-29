@@ -1,0 +1,15 @@
+info:
+  name: ObtenerReportesCambiosOperativos
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: https://localhost:7273/api/Reportes/cambios-operativos
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

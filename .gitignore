@@ -480,3 +480,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Bruno HTTP Client
+.bruno/
+**/requests/SIV.Bruno/environments/*.local.bru

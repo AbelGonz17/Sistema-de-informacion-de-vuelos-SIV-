@@ -1,0 +1,23 @@
+info:
+  name: AsignarPuerta
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Vuelos/asignar-puerta
+  body:
+    type: json
+    data: |-
+      {
+        "vueloId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "nuevaPuerta": "string",
+        "motivoCambio": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

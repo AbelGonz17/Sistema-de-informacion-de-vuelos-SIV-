@@ -1,0 +1,38 @@
+info:
+  name: ObtenerVueloFids
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: https://localhost:7273/api/Vuelos/fids?pageNumber=1&pageSize=20
+  params:
+    - name: pageNumber
+      value: "1"
+      type: query
+    - name: pageSize
+      value: "20"
+      type: query
+    - name: esLlegada
+      value: ""
+      type: query
+      disabled: true
+    - name: estado
+      value: ""
+      type: query
+      disabled: true
+    - name: aerolineaId
+      value: ""
+      type: query
+      disabled: true
+    - name: fecha
+      value: ""
+      type: query
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

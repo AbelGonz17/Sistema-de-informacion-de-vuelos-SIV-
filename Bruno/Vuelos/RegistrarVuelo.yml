@@ -1,0 +1,27 @@
+info:
+  name: RegistrarVuelo
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Vuelos/registrar
+  body:
+    type: json
+    data: |-
+      {
+        "numeroVuelo": "string",
+        "aerolinea": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "origen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "destino": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "horarioPlanificadoSalida": "2026-06-29T13:52:22.067Z",
+        "horarioPlanificadoLlegada": "2026-06-29T13:52:22.067Z",
+        "puerta": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,9 @@
+info:
+  name: Vuelos
+  type: folder
+  seq: 2
+
+request:
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmN2ZmN2IyNS04YzcxLTQ0YTgtODNlOS04YThkNGNmYmVlMzEiLCJuYW1lIjoiUGVkcm8iLCJlbWFpbCI6InBlZHJvQGhvdG1haWwuY29tIiwicm9sZSI6Ik9wZXJhZG9yIiwiZXhwIjoxNzgyNzY4Njc3LCJpc3MiOiJTSVZfQmFja2VuZCIsImF1ZCI6IlNJVl9Gcm9udEVuZCJ9.TTUqWTx0M2knmR-VaYARUY2s4bWgpCRV61bWzoulj_A

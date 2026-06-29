@@ -1,0 +1,15 @@
+info:
+  name: ObtenerByNumeroVuelo
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: https://localhost:7273/api/Vuelos/buscar/DM-2401
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

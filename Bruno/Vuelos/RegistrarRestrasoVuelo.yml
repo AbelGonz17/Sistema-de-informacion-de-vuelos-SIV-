@@ -1,0 +1,23 @@
+info:
+  name: RegistrarRestrasoVuelo
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Vuelos/registrar-retraso
+  body:
+    type: json
+    data: |-
+      {
+        "vueloId": "6CF91D20-D2B8-456F-8DFC-A79B8B40687B",
+        "nuevaHoraSalida": "2026-06-27T13:51:47.926Z",
+        "motivo": "Esto es una prueba"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

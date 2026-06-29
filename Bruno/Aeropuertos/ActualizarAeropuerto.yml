@@ -1,0 +1,23 @@
+info:
+  name: ActualizarAeropuerto
+  type: http
+  seq: 4
+
+http:
+  method: PUT
+  url: https://localhost:7273/api/Aeropuertos/3f3b149c-8b83-492a-b677-742f36f6db6a
+  body:
+    type: json
+    data: |-
+      {
+        "codigo": "string",
+        "nombre": "string",
+        "pais": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

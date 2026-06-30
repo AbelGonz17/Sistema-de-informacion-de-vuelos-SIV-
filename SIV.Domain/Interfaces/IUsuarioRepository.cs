@@ -8,6 +8,7 @@ namespace SIV.Domain.Interfaces
         Task<Usuario?> ObtenerPorCorreoAsync(string correo);
         Task<Usuario?> ObtenerPorIdConVuelosAsync(Guid usuarioId);
         Task<Usuario?> ObtenerParaModificacionAsync(Guid usuarioId);
+        Task<Usuario?> ObtenerPorCorreoConRefreshTokensAsync(string correo);
         Task AgregarAsync(Usuario usuario);
         Task ActualizarAsync(Usuario usuario);
         Task<IEnumerable<string>> ObtenerSeguidoresDeVueloAsync(Guid vueloId);

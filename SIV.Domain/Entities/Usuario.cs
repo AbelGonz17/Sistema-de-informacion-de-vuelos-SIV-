@@ -10,6 +10,9 @@ namespace SIV.Domain.Entities
         public string Rol { get; private set; }
         public string PassWordHash { get; private set; }
         public bool Activo { get; private set; } = true;
+        public int IntentosFallidosLogin { get; private set; } = 0;
+        public DateTime? BloqueadoHasta { get; private set; }
+
         private readonly List<Seguimiento> _seguimientos = new();
         private readonly List<Notificacion> _notificaciones = new();
 
@@ -19,10 +22,10 @@ namespace SIV.Domain.Entities
         private Usuario() { }
 
         public Usuario(
-            Guid id, 
-            string nombre, 
-            string correo, 
-            string rol, 
+            Guid id,
+            string nombre,
+            string correo,
+            string rol,
             string passWordHash)
         {
             Id = id;
@@ -53,6 +56,22 @@ namespace SIV.Domain.Entities
             }
         }
 
+        public void RegistrarIntentoFallido(int limiteIntentos, int minutosBloqueo)
+        {
+            IntentosFallidosLogin++;
+            if (IntentosFallidosLogin >= limiteIntentos)
+            {
+                BloqueadoHasta = DateTime.UtcNow.AddMinutes(minutosBloqueo);
+            }
+        }
+
+        public void ResetearIntentos()
+        {
+            IntentosFallidosLogin = 0;
+            BloqueadoHasta = null;
+        }
+
+
         public void DejarDeSeguir(Vuelo vuelo)
         {
             var seguimientoActivo = _seguimientos.FirstOrDefault(s => s.VueloId == vuelo.Id && s.Activo);
@@ -60,6 +79,45 @@ namespace SIV.Domain.Entities
             {
                 seguimientoActivo.Activo = false;
                 seguimientoActivo.FechaFin = DateTime.UtcNow;
+            }
+        }
+
+        private readonly List<RefreshToken> _refreshTokens = new();
+        public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
+
+        public void AgregarRefreshToken(string token, int diasValidez, string ip)
+        {
+            _refreshTokens.Add(new RefreshToken
+            {
+                Token = token,
+                FechaCreacion = DateTime.UtcNow,
+                FechaExpiracion = DateTime.UtcNow.AddDays(diasValidez),
+                CreadoPorIp = ip
+            });
+        }
+
+        public void RevocarRefreshToken(string token)
+        {
+            var rt = _refreshTokens.FirstOrDefault(t => t.Token == token);
+            if (rt != null)
+            {
+                rt.Codificado = true;
+            }
+        }
+        public void ActualizarPerfil(string nombre, string rol)
+        {
+            if (string.IsNullOrWhiteSpace(nombre)) throw new ArgumentException("El nombre no puede estar vacío");
+            if (string.IsNullOrWhiteSpace(rol)) throw new ArgumentException("El rol no puede estar vacío");
+            Nombre = nombre;
+            Rol = rol;
+        }
+
+
+        public void RevocarTodosRefreshTokens()
+        {
+            foreach (var rt in _refreshTokens.Where(t => t.Activo))
+            {
+                rt.Codificado = true;
             }
         }
     }

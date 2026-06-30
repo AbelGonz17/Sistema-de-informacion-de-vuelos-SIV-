@@ -76,6 +76,14 @@ namespace SIV.Infrastructure.Persistence
                 entity.Property(e => e.Rol).IsRequired().HasMaxLength(50);
 
                 entity.Property(e => e.PassWordHash).IsRequired().HasMaxLength(255);
+
+                entity.OwnsMany(e => e.RefreshTokens, rt =>
+                {
+                    rt.ToTable("RefreshTokens");
+                    rt.HasKey(t => t.Id);
+                    rt.Property(t => t.Token).IsRequired().HasMaxLength(200);
+                    rt.Property(t => t.CreadoPorIp).HasMaxLength(50);
+                });
             });
 
             modelBuilder.Entity<LogAuditoria>(entity =>

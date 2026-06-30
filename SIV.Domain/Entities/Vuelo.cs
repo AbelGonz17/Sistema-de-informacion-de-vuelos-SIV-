@@ -68,6 +68,41 @@ namespace SIV.Domain.Entities
             Activo = false;
         }
 
+        public void ActualizarDatosBasicos(
+            Guid aerolinea, 
+            Guid origen, 
+            Guid destino, 
+            DateTime horarioPlanificadoSalida, 
+            DateTime horarioPlanificadoLlegada, 
+            string puerta, 
+            Guid usuarioResponsable)
+        {
+            if (EstadoActual != EstadoVuelo.Programado)
+                throw new InvalidOperationException("Solo se pueden modificar los datos básicos de un vuelo en estado Programado.");
+
+            if (HorarioEstimadoSalida.HasValue || HorarioEstimadoLlegada.HasValue)
+                throw new InvalidOperationException("No se pueden modificar los datos básicos si ya existen estimaciones operativas registradas.");
+
+            Aerolinea = aerolinea;
+            Origen = origen;
+            Destino = destino;
+            HorarioPlanificadoSalida = horarioPlanificadoSalida;
+            HorarioPlanificadoLlegada = horarioPlanificadoLlegada;
+            Puerta = puerta;
+
+            var historialCambio = new HistorialCambioOperativo
+            {
+                VueloId = this.Id,
+                TipoCambio = "Corrección de Programación",
+                Motivo = "Actualización de datos básicos antes de operación",
+                DetalleCambio = "Se actualizaron los datos planificados del vuelo.",
+                FechaHora = DateTime.UtcNow,
+                UsuarioResponsable = usuarioResponsable
+            };
+
+            _historialCambio.Add(historialCambio);
+        }
+
         public void CambiarEstado(EstadoVuelo nuevoEstado, string motivo, Guid usuarioResponsable)
         {
             if (EstadoActual == EstadoVuelo.Cancelado)

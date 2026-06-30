@@ -12,7 +12,7 @@ namespace SIV.Presentation.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class VuelosController : ControllerBase
+    public class VuelosController : ApiControllerBase
     {
         private readonly IMediator _mediator;
         public VuelosController(IMediator mediator)
@@ -35,6 +35,41 @@ namespace SIV.Presentation.Controllers
                 return Ok(result);
 
             return BadRequest(result);
+        }
+
+        [HttpPut("{id}/basico")]
+        [Authorize(Roles = RolesConstantes.Operador)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<ActionResult<Guid>> ActualizarBasico(Guid id, [FromBody] ActualizarDatosBasicosRequest request)
+        {
+            var command = new ActualizarDatosBasicosVueloCommand(
+                id, request.Aerolinea, request.Origen, request.Destino,
+                request.HorarioPlanificadoSalida, request.HorarioPlanificadoLlegada,
+                request.Puerta, UsuarioId
+            );
+            
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess) return Ok(result);
+            return BadRequest(result);
+        }
+
+        public record ActualizarDatosBasicosRequest(Guid Aerolinea, Guid Origen, Guid Destino, DateTime HorarioPlanificadoSalida, DateTime HorarioPlanificadoLlegada, string Puerta);
+
+        [HttpGet("{id}/detalle")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerDetalle(Guid id)
+        {
+            var query = new ObtenerDetalleVueloQuery(id);
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess) return Ok(result);
+            return NotFound(result);
         }
 
         [HttpPost("actualizar-estado")]
@@ -164,6 +199,15 @@ namespace SIV.Presentation.Controllers
                 return Ok(result);
 
             return NotFound(result);
+        }
+
+        [HttpPost("cancelar")]
+        [Authorize(Roles = RolesConstantes.Operador)]
+        public async Task<ActionResult<bool>> CancelarVuelo([FromBody] CancelarVueloCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsSuccess) return Ok(result);
+            return BadRequest(result);
         }
     }
 }

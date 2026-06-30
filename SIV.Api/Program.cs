@@ -30,7 +30,9 @@ builder.Services.AddAuthentication(options =>
         Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
 
         NameClaimType = "name", 
-        RoleClaimType = System.Security.Claims.ClaimTypes.Role
+        RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+        ClockSkew = TimeSpan.Zero
+
     };
 
     options.Events = new JwtBearerEvents

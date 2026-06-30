@@ -60,5 +60,28 @@ namespace SIV.Presentation.Controllers
 
             return BadRequest(result.ErrorMessage);
         }
+
+        [HttpGet("exportar/{tipo}")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        public async Task<IActionResult> ExportarReporteCsv(string tipo, [FromQuery] DateTime? fechaInicio, [FromQuery] DateTime? fechaFin)
+        {
+            var query = new ExportarReportesCsvQuery
+            {
+                TipoReporte = tipo,
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin
+            };
+
+            var result = await _mediator.Send(query);
+
+            if (result.IsSuccess)
+            {
+                return File(result.Value, "text/csv", $"Reporte_{tipo}_{DateTime.Now:yyyyMMdd}.csv");
+            }
+
+            return BadRequest(result.ErrorMessage);
+        }
     }
 }

@@ -43,7 +43,15 @@ namespace SIV.Infrastructure.Persistence
                 .Include(u => u.Seguimientos)
                     .ThenInclude(s => s.Vuelo)
                         .ThenInclude(v => v.AerolineaRef)
+                .Include(u => u.RefreshTokens)
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
+        }
+
+        public async Task<Usuario?> ObtenerPorCorreoConRefreshTokensAsync(string correo)
+        {
+            return await _context.Usuarios
+                .Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u => u.Correo == correo);
         }
 
         public Task ActualizarAsync(Usuario usuario)

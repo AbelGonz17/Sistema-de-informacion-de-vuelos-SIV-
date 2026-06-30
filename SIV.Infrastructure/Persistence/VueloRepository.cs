@@ -27,10 +27,30 @@ namespace SIV.Infrastructure.Persistence
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
+        public async Task<Vuelo> ObtenerDetalleCompletoAsync(Guid id)
+        {
+            return await _context.Vuelos
+                .Include(v => v.AerolineaRef)
+                .Include(v => v.OrigenRef)
+                .Include(v => v.DestinoRef)
+                .Include(v => v.HistorialEstados)
+                .Include(v => v.HistorialCambio)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
         public async Task<Vuelo> ObtenerPorNumeroAsync(string numeroVuelo)
         {
             return await _context.Vuelos
                 .FirstOrDefaultAsync(v => v.NumeroVuelo == numeroVuelo);
+        }
+
+        public async Task<bool> ExistenVuelosActivosPorAerolineaAsync(Guid aerolineaId)
+        {
+            return await _context.Vuelos
+                .AnyAsync(v => v.Aerolinea == aerolineaId && v.Activo
+                            && v.EstadoActual != SIV.Domain.Common.EstadoVuelo.Cancelado
+                            && v.EstadoActual != SIV.Domain.Common.EstadoVuelo.Completado);
         }
 
         public async Task<IEnumerable<Vuelo>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada)

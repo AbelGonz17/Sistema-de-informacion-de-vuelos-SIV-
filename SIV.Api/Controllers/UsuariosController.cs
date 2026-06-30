@@ -22,17 +22,51 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<string>> Login([FromBody] AutenticarUsuarioQuery query)
+        public async Task<ActionResult<TokenResponseDto>> Login([FromBody] AutenticarUsuarioQuery query)
         {
+            query.IpAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "unknown";
             var result = await _mediator.Send(query);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
+
+        [HttpPost("refresh-token")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        public async Task<ActionResult<TokenResponseDto>> RefreshToken([FromBody] RefreshRequest request)
+        {
+            string ipAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "unknown";
+            var command = new RefrescarTokenCommand(request.AccessToken, request.RefreshToken, ipAddress);
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        public record RefreshRequest(string AccessToken, string RefreshToken);
+
+        [HttpPost("cerrar-sesion")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        public async Task<ActionResult<bool>> CerrarSesion([FromBody] CerrarSesionRequest request)
+        {
+            if (UsuarioId == Guid.Empty) 
+                return Unauthorized();
+
+            var command = new CerrarSesionCommand(UsuarioId, request?.RefreshToken);
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        public record CerrarSesionRequest(string? RefreshToken);
 
         [HttpPost("crear-interno")]
         [Authorize(Roles = RolesConstantes.Administrador)]
@@ -46,6 +80,22 @@ namespace SIV.Presentation.Controllers
             var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPut("{id}/interno")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        public async Task<ActionResult<string>> ActualizarUsuarioInterno(Guid id, [FromBody] ActualizarUsuarioInternoCommand command)
+        {
+            if (id != command.Id)
+                return BadRequest("El ID de la ruta no coincide con el cuerpo de la petición.");
+
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.Value) : BadRequest(result);
         }
 
         [HttpPost("registrar")]

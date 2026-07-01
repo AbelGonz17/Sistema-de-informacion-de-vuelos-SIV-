@@ -24,10 +24,8 @@ namespace SIV.Infrastructure.Persistence
             try
             {
                 await _context.SaveChangesAsync(cancellationToken);
-                if (_currentTransaction != null)
-                {
-                    await _currentTransaction.CommitAsync(cancellationToken);
-                }
+                if (_currentTransaction != null)            
+                    await _currentTransaction.CommitAsync(cancellationToken);          
             }
             catch
             {
@@ -44,10 +42,8 @@ namespace SIV.Infrastructure.Persistence
         {
             try
             {
-                if (_currentTransaction != null)
-                {
-                    await _currentTransaction.RollbackAsync(cancellationToken);
-                }
+                if (_currentTransaction != null)               
+                    await _currentTransaction.RollbackAsync(cancellationToken);              
             }
             finally
             {

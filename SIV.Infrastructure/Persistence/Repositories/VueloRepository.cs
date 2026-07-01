@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Vuelos;
 using SIV.Domain.Interfaces;
+using SIV.Infrastructure.Persistence;
 
-namespace SIV.Infrastructure.Persistence
+namespace SIV.Infrastructure.Persistence.Repositories
 {
     public class VueloRepository : IVueloRepository
     {
@@ -13,12 +14,12 @@ namespace SIV.Infrastructure.Persistence
             _context = context;
         }
 
-        public async Task<Vuelo> ObtenerPorIdAsync(Guid Id)
+        public async Task<Vuelo?> ObtenerPorIdAsync(Guid Id)
         {
             return await _context.Vuelos.FindAsync(Id);
         }
 
-        public async Task<Vuelo> ObtenerPorIdConHistorialAsync(Guid id)
+        public async Task<Vuelo?> ObtenerPorIdConHistorialAsync(Guid id)
         {
             return await _context.Vuelos
                 .Include(v => v.HistorialEstados)
@@ -27,7 +28,7 @@ namespace SIV.Infrastructure.Persistence
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<Vuelo> ObtenerDetalleCompletoAsync(Guid id)
+        public async Task<Vuelo?> ObtenerDetalleCompletoAsync(Guid id)
         {
             return await _context.Vuelos
                 .Include(v => v.AerolineaRef)
@@ -39,7 +40,7 @@ namespace SIV.Infrastructure.Persistence
                 .FirstOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<Vuelo> ObtenerPorNumeroAsync(string numeroVuelo)
+        public async Task<Vuelo?> ObtenerPorNumeroAsync(string numeroVuelo)
         {
             return await _context.Vuelos
                 .FirstOrDefaultAsync(v => v.NumeroVuelo == numeroVuelo);
@@ -49,11 +50,11 @@ namespace SIV.Infrastructure.Persistence
         {
             return await _context.Vuelos
                 .AnyAsync(v => v.Aerolinea == aerolineaId && v.Activo
-                            && v.EstadoActual != SIV.Domain.Common.EstadoVuelo.Cancelado
-                            && v.EstadoActual != SIV.Domain.Common.EstadoVuelo.Completado);
+                            && v.EstadoActual != EstadoVuelo.Cancelado
+                            && v.EstadoActual != EstadoVuelo.Completado);
         }
 
-        public async Task<IEnumerable<Vuelo>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada)
+        public async Task<IEnumerable<Vuelo?>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada)
         {
             var query = _context.Vuelos
                 .Include(v => v.AerolineaRef)
@@ -81,8 +82,6 @@ namespace SIV.Infrastructure.Persistence
 
         public Task ActualizarAsync(Vuelo vuelo)
         {
-            // EF Core ya está trackeando la entidad porque se obtuvo con FindAsync,
-            // llamar a Update() marca incorrectamente como "Modified" a las entidades recién agregadas (como HistorialEstado).
             return Task.CompletedTask;
         }
 
@@ -96,7 +95,7 @@ namespace SIV.Infrastructure.Persistence
                             && v.Destino == destino);
         }
 
-        public async Task<(IEnumerable<Vuelo> Vuelos, int TotalCount)> ObtenerVuelosFidsPaginadosAsync(int pageNumber, int pageSize, bool? esLlegada, string? estado, Guid? aerolineaId, DateTime? fecha)
+        public async Task<(IEnumerable<Vuelo?> Vuelos, int TotalCount)> ObtenerVuelosFidsPaginadosAsync(int pageNumber, int pageSize, bool? esLlegada, string? estado, Guid? aerolineaId, DateTime? fecha)
         {
             var query = _context.Vuelos
                 .Include(v => v.AerolineaRef)
@@ -121,16 +120,12 @@ namespace SIV.Infrastructure.Persistence
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(estado) && Enum.TryParse<SIV.Domain.Common.EstadoVuelo>(estado, out var estadoEnum))
-            {
+            if (!string.IsNullOrWhiteSpace(estado) && Enum.TryParse<EstadoVuelo>(estado, out var estadoEnum))            
                 query = query.Where(v => v.EstadoActual == estadoEnum);
-            }
-
-            if (aerolineaId.HasValue && aerolineaId.Value != Guid.Empty)
-            {
+            
+            if (aerolineaId.HasValue && aerolineaId.Value != Guid.Empty)        
                 query = query.Where(v => v.Aerolinea == aerolineaId.Value);
-            }
-
+           
             if (esLlegada.HasValue)
             {
                 if (esLlegada.Value)
@@ -157,7 +152,7 @@ namespace SIV.Infrastructure.Persistence
             return (vuelos, totalCount);
         }
 
-        public async Task<IEnumerable<Vuelo>> ObtenerTodosAsync()
+        public async Task<IEnumerable<Vuelo?>> ObtenerTodosAsync()
         {
             return await _context.Vuelos.AsNoTracking().ToListAsync();
         }

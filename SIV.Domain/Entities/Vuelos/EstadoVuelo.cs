@@ -1,4 +1,4 @@
-﻿namespace SIV.Domain.Common
+﻿namespace SIV.Domain.Entities.Vuelos
 {
     public enum EstadoVuelo
     {

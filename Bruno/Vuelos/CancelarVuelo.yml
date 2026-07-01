@@ -1,18 +1,17 @@
 info:
-  name: RegistrarUsarioPublico
+  name: CancelarVuelo
   type: http
-  seq: 5
+  seq: 6
 
 http:
   method: POST
-  url: https://localhost:7273/api/Usuarios/registrar
+  url: https://localhost:7273/api/Vuelos/cancelar
   body:
     type: json
     data: |-
       {
-        "nombre": "string",
-        "correo": "string",
-        "contrasena": "string"
+        "vueloId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "motivo": "string"
       }
   auth: inherit
 

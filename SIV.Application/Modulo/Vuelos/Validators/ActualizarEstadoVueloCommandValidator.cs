@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using SIV.Application.Modulo.Vuelos.Commands;
-using SIV.Domain.Common;
+using SIV.Domain.Entities.Vuelos;
 
 namespace SIV.Application.Modulo.Vuelos.Validators
 {

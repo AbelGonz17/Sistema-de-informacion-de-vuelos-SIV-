@@ -2,6 +2,7 @@ using MediatR;
 using SIV.Application.Modulo.Reportes.DTOs;
 using SIV.Application.Modulo.Reportes.Queries;
 using SIV.Domain.Common;
+using SIV.Domain.Entities.Vuelos;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Reportes.Handlers

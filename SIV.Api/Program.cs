@@ -6,7 +6,6 @@ using SIV.Application;
 using SIV.Infrastructure;
 using SIV.Infrastructure.Persistence;
 using SIV.Infrastructure.RealTime;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -112,7 +111,7 @@ using (var scope = app.Services.CreateScope())
             await context.Database.MigrateAsync();
         }
 
-        await SIV.Infrastructure.Persistence.DatabaseSeeder.SeedAsync(context);
+        await DatabaseSeeder.SeedAsync(context);
     }
     catch (Exception ex)
     {

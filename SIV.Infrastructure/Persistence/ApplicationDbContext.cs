@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Catalogo;
+using SIV.Domain.Entities.Sistema;
+using SIV.Domain.Entities.Usuarios;
+using SIV.Domain.Entities.Vuelos;
 
 namespace SIV.Infrastructure.Persistence
 {
@@ -106,7 +109,6 @@ namespace SIV.Infrastructure.Persistence
                       .HasMaxLength(50);
             });
 
-            // Filtros Globales para Soft Delete (Opción 2)
             modelBuilder.Entity<Usuario>().HasQueryFilter(x => x.Activo);
             modelBuilder.Entity<Aerolinea>().HasQueryFilter(x => x.Activo);
             modelBuilder.Entity<Aeropuerto>().HasQueryFilter(x => x.Activo);

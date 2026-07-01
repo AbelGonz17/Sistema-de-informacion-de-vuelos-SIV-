@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SIV.Domain.Interfaces;
 using SIV.Infrastructure.Persistence;
+using SIV.Infrastructure.Persistence.Repositories;
 using SIV.Infrastructure.RealTime;
 using SIV.Infrastructure.Security;
 
@@ -15,6 +16,7 @@ namespace SIV.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+            #region Repositories, Services, UnitOfWork
             services.AddScoped<IVueloRepository, VueloRepository>();
             services.AddScoped<IAuditoriaRepository, AuditoriaRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
@@ -25,12 +27,12 @@ namespace SIV.Infrastructure
 
             services.AddScoped<INotificacionService, NotificacionService>();
             services.AddScoped<ISeguridadService, SeguridadService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            #endregion
 
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPasswordHasher, PasswordHasher>();
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            
             services.AddHttpContextAccessor();
             services.AddSignalR(); 
 

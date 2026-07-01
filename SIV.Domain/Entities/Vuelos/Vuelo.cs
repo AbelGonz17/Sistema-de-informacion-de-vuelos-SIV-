@@ -1,7 +1,7 @@
 using SIV.Domain.Common;
-using SIV.Domain.Interfaces;
+using SIV.Domain.Entities.Catalogo;
 
-namespace SIV.Domain.Entities
+namespace SIV.Domain.Entities.Vuelos
 {
     public class Vuelo : ISoftDeletable
     {

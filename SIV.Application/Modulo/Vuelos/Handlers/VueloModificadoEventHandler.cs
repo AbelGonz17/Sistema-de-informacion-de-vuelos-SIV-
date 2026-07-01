@@ -1,6 +1,7 @@
 using MediatR;
 using SIV.Application.Modulo.Vuelos.Commands;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Sistema;
+using SIV.Domain.Entities.Vuelos;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Vuelos.Handlers
@@ -37,7 +38,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                     Id = Guid.NewGuid(),
                     UsuarioDestinatarioId = usuarioId,
                     VueloRelacionadoId = notification.VueloId,
-                    TipoEvento = SIV.Domain.Common.TipoEventoVuelo.CambioEstado, 
+                    TipoEvento = TipoEventoVuelo.CambioEstado, 
                     Mensaje = mensajeAlerta,
                     FechaHoraGenearicion = DateTime.UtcNow,
                     FueLeida = false

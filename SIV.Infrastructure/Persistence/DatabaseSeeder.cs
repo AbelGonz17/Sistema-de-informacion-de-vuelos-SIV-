@@ -1,8 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Entities;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SIV.Infrastructure.Persistence
 {
@@ -36,9 +33,7 @@ namespace SIV.Infrastructure.Persistence
             }
 
             if (context.ChangeTracker.HasChanges())
-            {
-                await context.SaveChangesAsync();
-            }
+                await context.SaveChangesAsync();            
         }
     }
 }

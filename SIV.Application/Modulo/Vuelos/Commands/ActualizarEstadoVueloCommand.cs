@@ -1,6 +1,7 @@
 using MediatR;
 using SIV.Application.Common.Interfaces;
 using SIV.Domain.Common;
+using SIV.Domain.Entities.Vuelos;
 
 namespace SIV.Application.Modulo.Vuelos.Commands
 {

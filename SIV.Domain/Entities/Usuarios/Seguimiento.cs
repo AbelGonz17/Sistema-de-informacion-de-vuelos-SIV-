@@ -1,4 +1,6 @@
-namespace SIV.Domain.Entities
+using SIV.Domain.Entities.Vuelos;
+
+namespace SIV.Domain.Entities.Usuarios
 {
     public class Seguimiento
     {

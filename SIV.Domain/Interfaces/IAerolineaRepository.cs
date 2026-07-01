@@ -1,4 +1,4 @@
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Catalogo;
 
 namespace SIV.Domain.Interfaces
 {

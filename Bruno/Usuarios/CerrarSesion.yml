@@ -1,0 +1,23 @@
+info:
+  name: CerrarSesion
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Usuarios/cerrar-sesion
+  body:
+    type: json
+    data: |-
+      {
+        "refreshToken": "string"
+      }
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZjhhZTkxMy05ZmQ5LTRhMTItODdjNC05OGFlZDFiY2VkNDQiLCJuYW1lIjoiQWJlbCBHb256YWxleiIsImVtYWlsIjoiYWJlbEBob3RtYWlsLmNvbSIsInJvbGUiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzgyODU1NDMxLCJpc3MiOiJTSVZfQmFja2VuZCIsImF1ZCI6IlNJVl9Gcm9udEVuZCJ9.g7m935yx21C8UyKJLNws3XmPsS0jveIc4vq_YYQm0Ac
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

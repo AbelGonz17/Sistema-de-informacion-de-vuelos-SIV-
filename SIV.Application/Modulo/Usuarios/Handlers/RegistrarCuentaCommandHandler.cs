@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
-
+using SIV.Domain.Entities.Usuarios;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
@@ -30,7 +30,7 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
 
             string passwordHash = _passwordHasher.Hash(request.Contrasena);
 
-            var nuevoUsuario = new Domain.Entities.Usuario(
+            var nuevoUsuario = new Usuario(
                 Guid.NewGuid(),
                 request.Nombre,
                 request.Correo,

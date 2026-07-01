@@ -1,7 +1,7 @@
 using MediatR;
 using SIV.Application.Modulo.Aeropuertos.Commands;
 using SIV.Domain.Common;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Catalogo;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Aeropuertos.Handlers

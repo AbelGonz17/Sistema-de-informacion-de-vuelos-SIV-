@@ -1,6 +1,6 @@
 using MediatR;
 using SIV.Application.Modulo.Usuarios.Commands;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Sistema;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.EventHandlers

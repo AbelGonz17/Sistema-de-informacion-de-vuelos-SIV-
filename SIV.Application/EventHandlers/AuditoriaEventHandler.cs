@@ -1,10 +1,7 @@
 using MediatR;
 using SIV.Application.Common.Events;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Sistema;
 using SIV.Domain.Interfaces;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SIV.Application.EventHandlers
 {

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Catalogo;
 
 namespace SIV.Infrastructure.Persistence
 {

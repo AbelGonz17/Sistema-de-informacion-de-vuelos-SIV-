@@ -1,7 +1,7 @@
 using MediatR;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Domain.Common;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Usuarios;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers

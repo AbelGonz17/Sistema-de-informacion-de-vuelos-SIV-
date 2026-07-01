@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Vuelos;
 using SIV.Domain.Interfaces;
 
 namespace SIV.Infrastructure.RealTime

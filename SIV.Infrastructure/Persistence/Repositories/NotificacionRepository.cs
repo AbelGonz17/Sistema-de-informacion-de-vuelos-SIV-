@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Sistema;
 using SIV.Domain.Interfaces;
+using SIV.Infrastructure.Persistence;
 
-namespace SIV.Infrastructure.Persistence
+namespace SIV.Infrastructure.Persistence.Repositories
 {
     public class NotificacionRepository : INotificacionRepository
     {

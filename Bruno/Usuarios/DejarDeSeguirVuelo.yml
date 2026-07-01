@@ -1,7 +1,7 @@
 info:
   name: DejarDeSeguirVuelo
   type: http
-  seq: 9
+  seq: 12
 
 http:
   method: DELETE

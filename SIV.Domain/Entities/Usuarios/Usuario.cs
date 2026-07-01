@@ -1,6 +1,8 @@
-using SIV.Domain.Interfaces;
+using SIV.Domain.Common;
+using SIV.Domain.Entities.Sistema;
+using SIV.Domain.Entities.Vuelos;
 
-namespace SIV.Domain.Entities
+namespace SIV.Domain.Entities.Usuarios
 {
     public class Usuario : ISoftDeletable
     {

@@ -1,6 +1,6 @@
-﻿using SIV.Domain.Common;
+﻿using SIV.Domain.Entities.Vuelos;
 
-namespace SIV.Domain.Entities
+namespace SIV.Domain.Entities.Sistema
 {
     public class Notificacion
     {

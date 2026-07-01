@@ -1,0 +1,26 @@
+info:
+  name: ActualizarVuelo
+  type: http
+  seq: 11
+
+http:
+  method: PUT
+  url: https://localhost:7273/api/Vuelos/F12A34B5-67C8-90D1-EF23-456789ABCDEF/basico
+  body:
+    type: json
+    data: |-
+      {
+        "aerolinea": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "origen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "destino": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        "horarioPlanificadoSalida": "2026-07-01T18:35:35.413Z",
+        "horarioPlanificadoLlegada": "2026-07-01T18:35:35.413Z",
+        "puerta": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

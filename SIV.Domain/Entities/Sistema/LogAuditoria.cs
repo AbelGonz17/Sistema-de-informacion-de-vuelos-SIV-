@@ -1,4 +1,4 @@
-﻿namespace SIV.Domain.Entities
+﻿namespace SIV.Domain.Entities.Sistema
 {
     public class LogAuditoria
     {

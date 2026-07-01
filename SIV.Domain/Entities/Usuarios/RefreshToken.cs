@@ -1,6 +1,6 @@
 using System;
 
-namespace SIV.Domain.Entities
+namespace SIV.Domain.Entities.Usuarios
 {
     public class RefreshToken
     {

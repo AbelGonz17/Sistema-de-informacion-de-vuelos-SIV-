@@ -1,6 +1,6 @@
 using SIV.Domain.Common;
 
-namespace SIV.Domain.Entities
+namespace SIV.Domain.Entities.Vuelos
 {
     public class HistorialCambioOperativo
     {

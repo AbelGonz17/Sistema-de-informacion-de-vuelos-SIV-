@@ -1,18 +1,17 @@
 info:
-  name: RegistrarUsuariointerno
+  name: ActualizarUsuario
   type: http
-  seq: 4
+  seq: 8
 
 http:
-  method: POST
-  url: https://localhost:7273/api/Usuarios/Crear-interno
+  method: PUT
+  url: https://localhost:7273/api/Usuarios/F12A34B5-67C8-90D1-EF23-456789ABCDEF/interno
   body:
     type: json
     data: |-
       {
+        "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
         "nombre": "string",
-        "correoElectronico": "string",
-        "contrasena": "string",
         "rol": "string"
       }
   auth: inherit

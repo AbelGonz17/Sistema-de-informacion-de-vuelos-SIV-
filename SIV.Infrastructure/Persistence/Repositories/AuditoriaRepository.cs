@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Sistema;
 using SIV.Domain.Interfaces;
+using SIV.Infrastructure.Persistence;
 
-namespace SIV.Infrastructure.Persistence
+namespace SIV.Infrastructure.Persistence.Repositories
 {
     public class AuditoriaRepository : IAuditoriaRepository
     {
@@ -22,21 +23,15 @@ namespace SIV.Infrastructure.Persistence
         {
             var query = _context.LogAuditorias.AsNoTracking().AsQueryable();
 
-            if (fechaInicio.HasValue)
-            {
+            if (fechaInicio.HasValue)           
                 query = query.Where(l => l.FechaRegistro >= fechaInicio.Value);
-            }
-
-            if (fechaFin.HasValue)
-            {
+            
+            if (fechaFin.HasValue)          
                 query = query.Where(l => l.FechaRegistro <= fechaFin.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(accion))
-            {
+            
+            if (!string.IsNullOrWhiteSpace(accion))           
                 query = query.Where(l => l.Accion.Contains(accion));
-            }
-
+            
             var totalCount = await query.CountAsync();
 
             var logs = await query

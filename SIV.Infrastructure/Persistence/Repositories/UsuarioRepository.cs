@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using SIV.Domain.Entities;
+using SIV.Domain.Entities.Usuarios;
 using SIV.Domain.Interfaces;
+using SIV.Infrastructure.Persistence;
 
-namespace SIV.Infrastructure.Persistence
+namespace SIV.Infrastructure.Persistence.Repositories
 {
     public class UsuarioRepository : IUsuarioRepository
     {
@@ -56,7 +57,6 @@ namespace SIV.Infrastructure.Persistence
 
         public Task ActualizarAsync(Usuario usuario)
         {
-            // EF Core ya trackea al usuario cargado; Update rompe subentidades nuevas
             return Task.CompletedTask;
         }
 

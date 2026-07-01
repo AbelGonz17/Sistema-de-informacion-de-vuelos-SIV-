@@ -1,4 +1,4 @@
-namespace SIV.Domain.Interfaces
+namespace SIV.Domain.Common
 {
     public interface ISoftDeletable
     {

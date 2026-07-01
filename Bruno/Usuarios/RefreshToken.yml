@@ -1,0 +1,22 @@
+info:
+  name: RefreshToken
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: https://localhost:7273/api/Usuarios/refresh-token
+  body:
+    type: json
+    data: |-
+      {
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlZjhhZTkxMy05ZmQ5LTRhMTItODdjNC05OGFlZDFiY2VkNDQiLCJuYW1lIjoiQWJlbCBHb256YWxleiIsImVtYWlsIjoiYWJlbEBob3RtYWlsLmNvbSIsInJvbGUiOiJBZG1pbmlzdHJhZG9yIiwiZXhwIjoxNzgyODMzMDM5LCJpc3MiOiJTSVZfQmFja2VuZCIsImF1ZCI6IlNJVl9Gcm9udEVuZCJ9.AY9USm1yPt0AWQGv2dDh3z8iTtCtTPfGe5DcQ7NgWbg",
+        "refreshToken": "26eb79f4-5627-4ba8-b572-e0e285c54a69"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

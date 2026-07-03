@@ -35,15 +35,22 @@ namespace SIV.Api.Middleware
         private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+            var statusCode = exception switch
+            {
+                InvalidOperationException => StatusCodes.Status400BadRequest,
+                ArgumentException => StatusCodes.Status400BadRequest,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            context.Response.StatusCode = statusCode;
 
             var problemDetails = new ProblemDetails
             {
-                Status = (int)HttpStatusCode.InternalServerError,
-                Title = "Ocurrió un error interno en el servidor.",
+                Status = statusCode,
+                Title = statusCode == 400 ? "Regla de negocio no cumplida." : "Ocurrió un error interno en el servidor.",
                 Detail = exception.Message,
-                Instance = context.Request.Path,
-                Extensions = { ["stackTrace"] = exception.StackTrace } // Agregado temporalmente para diagnosticar
+                Instance = context.Request.Path
             };
 
             var jsonResponse = JsonSerializer.Serialize(problemDetails);

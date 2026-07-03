@@ -31,7 +31,7 @@ namespace SIV.Infrastructure.Security
                 issuer: _configuration["Jwt:Issuer"] ?? "SIV_Backend",
                 audience: _configuration["Jwt:Audience"] ?? "SIV_FrontEnd",
                 claims: claims,
-                expires: DateTime.UtcNow.AddSeconds(30),
+                expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
             );
 

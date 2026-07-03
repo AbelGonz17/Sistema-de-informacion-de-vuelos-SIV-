@@ -105,6 +105,9 @@ namespace SIV.Domain.Entities.Vuelos
 
         public void CambiarEstado(EstadoVuelo nuevoEstado, string motivo, Guid usuarioResponsable)
         {
+            if (EstadoActual == nuevoEstado)
+                throw new InvalidOperationException($"El vuelo ya se encuentra en estado '{nuevoEstado}'.");
+
             if (EstadoActual == EstadoVuelo.Cancelado)
                 throw new InvalidOperationException("Un vuelo en estado Cancelado es terminal e irreversible. No admite nuevos cambios.");
 

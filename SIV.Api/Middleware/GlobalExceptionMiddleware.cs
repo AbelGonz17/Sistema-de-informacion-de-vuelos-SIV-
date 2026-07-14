@@ -49,7 +49,9 @@ namespace SIV.Api.Middleware
             {
                 Status = statusCode,
                 Title = statusCode == 400 ? "Regla de negocio no cumplida." : "Ocurrió un error interno en el servidor.",
-                Detail = exception.Message,
+                Detail = exception.InnerException != null 
+                    ? $"{exception.Message} Detalles: {exception.InnerException.Message}" 
+                    : exception.Message,
                 Instance = context.Request.Path
             };
 

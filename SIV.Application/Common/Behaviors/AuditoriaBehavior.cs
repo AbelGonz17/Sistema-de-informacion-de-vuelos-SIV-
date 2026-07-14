@@ -51,11 +51,12 @@ namespace SIV.Application.Common.Behaviors
                 }
                 else
                 {
-                    resultadoDetalles = "Éxito: Operación completada.";
+                    resultadoDetalles = "Éxito: Operación completada."; 
                 }
 
                 var queryDetails = SerializeRequestSafely(request);
                 var logMsg = $"Resultado: {resultadoDetalles}. Payload: {queryDetails}";
+                if (logMsg.Length > 500) logMsg = logMsg.Substring(0, 497) + "...";
 
                 await _mediator.Publish(new AuditoriaEvent(usuario, accion, logMsg), cancellationToken);
 
@@ -68,6 +69,7 @@ namespace SIV.Application.Common.Behaviors
                     ? auditable.ObtenerMensajeAuditoria(Result.Failure(ex.Message, 500))
                     : $"Fallo al ejecutar {request.GetType().Name}.";
                 var logMsg = $"Fallo: Excepción lanzada: {ex.Message}. {customMsg} Payload: {queryDetails}";
+                if (logMsg.Length > 500) logMsg = logMsg.Substring(0, 497) + "...";
 
                 await _mediator.Publish(new AuditoriaEvent(usuario, accion, logMsg), cancellationToken);
 

@@ -99,13 +99,14 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("registrar")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<string>> Registrar([FromBody] RegistrarCuentaCommand command)
+        public async Task<ActionResult<TokenResponseDto>> Registrar([FromBody] RegistrarCuentaCommand command)
         {
+            command.IpAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "unknown";
             var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);

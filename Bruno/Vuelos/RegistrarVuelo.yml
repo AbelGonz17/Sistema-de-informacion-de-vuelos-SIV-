@@ -10,13 +10,13 @@ http:
     type: json
     data: |-
       {
-        "numeroVuelo": "string",
-        "aerolinea": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "origen": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "destino": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-        "horarioPlanificadoSalida": "2026-06-29T13:52:22.067Z",
-        "horarioPlanificadoLlegada": "2026-06-29T13:52:22.067Z",
-        "puerta": "string"
+        "numeroVuelo": "B6-2404",
+        "aerolinea": "63A857D5-803D-4617-BA19-CA5575576EB3",
+        "origen": "4D8C854A-0841-4CEF-8207-7F5E223F709F",
+        "destino": "F8DF28E3-3030-46DF-B024-DE542E052EB3",
+        "horarioPlanificadoSalida": "2026-08-15T14:30:00.000Z",
+        "horarioPlanificadoLlegada": "2026-08-15T18:15:00.000Z",
+        "puerta": "B05"
       }
   auth: inherit
 

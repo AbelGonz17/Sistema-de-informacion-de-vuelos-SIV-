@@ -31,7 +31,6 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 NumeroVuelo = vuelo.NumeroVuelo,
                 HistorialEstados = vuelo.HistorialEstados.Select(he => new HistorialEstadoDto
                 {
-                    Id = he.Id,
                     EstadoAnterior = he.EstadoAnterior.ToString(),
                     EstadoNuevo = he.EstadoNuevo.ToString(),
                     FechaHora = he.FechaHora,
@@ -39,7 +38,6 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 }).OrderByDescending(h => h.FechaHora).ToList(),
                 HistorialCambios = vuelo.HistorialCambio.Select(hc => new HistorialCambioOperativoDto
                 {
-                    Id = hc.Id,
                     TipoCambio = hc.TipoCambio,
                     Motivo = hc.Motivo,
                     DetalleCambio = hc.DetalleCambio,

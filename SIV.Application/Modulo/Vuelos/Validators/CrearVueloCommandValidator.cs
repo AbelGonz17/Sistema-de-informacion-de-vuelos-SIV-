@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using SIV.Application.Modulo.Vuelos.Commands;
 
 namespace SIV.Application.Modulo.Vuelos.Validators
@@ -30,6 +30,10 @@ namespace SIV.Application.Modulo.Vuelos.Validators
                 .NotEmpty().WithMessage("La hora de llegada es obligatoria.")
                 .Must((comando, llegada) => llegada > comando.HorarioPlanificadoSalida)
                 .WithMessage("La fecha de llegada debe ser posterior a la fecha de salida.");
+
+            RuleFor(c => c.Puerta)
+                .NotEmpty().WithMessage("La puerta de embarque es obligatoria.")
+                .MaximumLength(10).WithMessage("La puerta no puede exceder los 10 caracteres.");
         }
     }
 }

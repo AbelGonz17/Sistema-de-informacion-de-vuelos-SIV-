@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Modulo.Usuarios.Commands;
 using SIV.Application.Modulo.Usuarios.Queries;
 using SIV.Domain.Common;
-using System.Security.Claims;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Modulo.Usuarios.DTOs;
 

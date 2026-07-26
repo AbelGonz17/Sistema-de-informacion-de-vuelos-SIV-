@@ -87,7 +87,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:5173")
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // Necesario si usas SignalR o cookies/tokens con credenciales
+              .AllowCredentials(); 
     });
 });
 

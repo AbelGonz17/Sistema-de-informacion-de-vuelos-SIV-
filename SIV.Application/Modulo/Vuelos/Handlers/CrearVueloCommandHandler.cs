@@ -12,19 +12,43 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
         private readonly IVueloRepository _vueloRepository;
         private readonly ISeguridadService _seguridadService;
         private readonly IMediator _mediator;
+        private readonly IAerolineaRepository _aerolineaRepository;
+        private readonly IAeropuertoRepository _aeropuertoRepository;
 
         public CrearVueloCommandHandler(
             IVueloRepository vueloRepository,
             ISeguridadService seguridadService,
-            IMediator mediator)
+            IMediator mediator,
+            IAerolineaRepository aerolineaRepository,
+            IAeropuertoRepository aeropuertoRepository)
         {
             _vueloRepository = vueloRepository;
             _seguridadService = seguridadService;
             _mediator = mediator;
+            _aerolineaRepository = aerolineaRepository;
+            _aeropuertoRepository = aeropuertoRepository;
         }
 
         public async Task<Result<Guid>> Handle(CrearVueloCommand request, CancellationToken cancellationToken)
         {
+            var aerolinea = await _aerolineaRepository.ObtenerPorIdAsync(request.Aerolinea);
+            if (aerolinea == null)
+            {
+                return Result<Guid>.Failure("La aerolínea especificada no existe.", StatusCodes.Status404NotFound);
+            }
+
+            var origen = await _aeropuertoRepository.ObtenerPorIdAsync(request.Origen);
+            if (origen == null)
+            {
+                return Result<Guid>.Failure("El aeropuerto de origen especificado no existe.", StatusCodes.Status404NotFound);
+            }
+
+            var destino = await _aeropuertoRepository.ObtenerPorIdAsync(request.Destino);
+            if (destino == null)
+            {
+                return Result<Guid>.Failure("El aeropuerto de destino especificado no existe.", StatusCodes.Status404NotFound);
+            }
+
             bool existeVueloDuplicado = await _vueloRepository.ExisteVueloAsync(
                 request.NumeroVuelo,
                 request.Aerolinea,

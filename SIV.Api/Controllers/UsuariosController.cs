@@ -111,7 +111,7 @@ namespace SIV.Presentation.Controllers
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
 
-        [HttpDelete("{id}/desactivar")]
+        [HttpPatch("{id}/desactivar")]
         [Authorize(Roles = RolesConstantes.Administrador)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
@@ -125,6 +125,41 @@ namespace SIV.Presentation.Controllers
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
+
+        [HttpPatch("{id}/activar")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> ActivarUsuario(Guid id)
+        {
+            var command = new ActivarUsuarioCommand(id);
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPatch("cambiar-contrasena")]
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> CambiarContrasena([FromBody] CambiarContrasenaRequest request)
+        {
+            if (UsuarioId == Guid.Empty) 
+                return Unauthorized();
+
+            var command = new CambiarContrasenaCommand(UsuarioId, request.ContrasenaActual, request.NuevaContrasena);
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        public record CambiarContrasenaRequest(string ContrasenaActual, string NuevaContrasena);
 
         [HttpGet("mis-seguimientos")]
         [Authorize]

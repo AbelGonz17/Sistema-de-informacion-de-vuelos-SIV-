@@ -163,12 +163,12 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("mis-seguimientos")]
         [Authorize]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<VueloDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HistorialSeguimientoDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<IEnumerable<VueloDto>>> ObtenerMisSeguimientos()
+        public async Task<ActionResult<IEnumerable<HistorialSeguimientoDto>>> ObtenerMisSeguimientos()
         {
             if (UsuarioId == Guid.Empty) 
                 return Unauthorized();

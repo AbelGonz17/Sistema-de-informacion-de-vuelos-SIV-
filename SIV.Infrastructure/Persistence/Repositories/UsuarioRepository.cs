@@ -35,6 +35,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
                 .AsNoTracking() 
                 .Include(u => u.Seguimientos.Where(s => s.Activo))
                     .ThenInclude(s => s.Vuelo)
+                        .ThenInclude(v => v.AerolineaRef)
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 

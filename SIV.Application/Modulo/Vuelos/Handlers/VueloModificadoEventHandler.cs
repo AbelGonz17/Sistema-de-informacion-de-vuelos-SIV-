@@ -28,6 +28,20 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             var seguidoresIds = await _usuarioRepository.ObtenerIdsSeguidoresDeVueloAsync(notification.VueloId);
 
             string mensajeAlerta = $"Atención: El vuelo {notification.NumeroVuelo} ha cambiado su estado a {notification.NuevoEstado}.";
+            if (!string.IsNullOrWhiteSpace(notification.MotivoCambio))
+            {
+                var motivoSimple = notification.MotivoCambio;
+                int idx = motivoSimple.LastIndexOf("Motivo: ", StringComparison.OrdinalIgnoreCase);
+                if (idx >= 0)
+                {
+                    motivoSimple = motivoSimple.Substring(idx + "Motivo: ".Length).Trim();
+                }
+                
+                if (!string.IsNullOrWhiteSpace(motivoSimple))
+                {
+                    mensajeAlerta += $" Motivo: {motivoSimple}";
+                }
+            }
 
             var notificaciones = new List<Notificacion>();
 

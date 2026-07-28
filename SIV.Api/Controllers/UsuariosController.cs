@@ -98,13 +98,14 @@ namespace SIV.Presentation.Controllers
         }
 
         [HttpPost("registrar")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenResponseDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ProblemDetails))]
-        public async Task<ActionResult<string>> Registrar([FromBody] RegistrarCuentaCommand command)
+        public async Task<ActionResult<TokenResponseDto>> Registrar([FromBody] RegistrarCuentaCommand command)
         {
+            command.IpAddress = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "unknown";
             var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);
@@ -223,5 +224,27 @@ namespace SIV.Presentation.Controllers
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
+
+        [HttpGet("internos")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UsuarioInternoDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IEnumerable<UsuarioInternoDto>>> ObtenerUsuariosInternos()
+        {
+            var result = await _mediator.Send(new ObtenerUsuariosInternosQuery());
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("publicos")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UsuarioPublicoDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IEnumerable<UsuarioPublicoDto>>> ObtenerUsuariosPublicos()
+        {
+            var result = await _mediator.Send(new ObtenerUsuariosPublicosQuery());
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
     }
-}
+}

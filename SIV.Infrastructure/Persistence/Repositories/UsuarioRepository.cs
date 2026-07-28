@@ -77,5 +77,25 @@ namespace SIV.Infrastructure.Persistence.Repositories
                  .Select(u => u.Id)
                  .ToListAsync();
         }
+
+        public async Task<IEnumerable<Usuario>> ObtenerUsuariosInternosAsync()
+        {
+            var rolesInternos = new[] { "Administrador", "Operador", "Auditor" };
+            return await _context.Usuarios
+                .AsNoTracking()
+                .Where(u => rolesInternos.Contains(u.Rol))
+                .OrderBy(u => u.Rol)
+                .ThenBy(u => u.Nombre)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Usuario>> ObtenerUsuariosPublicosAsync()
+        {
+            return await _context.Usuarios
+                .AsNoTracking()
+                .Where(u => u.Rol == "Visitante")
+                .OrderBy(u => u.Nombre)
+                .ToListAsync();
+        }
     }
-}
+}

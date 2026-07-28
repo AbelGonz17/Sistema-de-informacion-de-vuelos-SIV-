@@ -1,13 +1,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using SIV.Application.Modulo.Usuarios.Commands;
+using SIV.Application.Modulo.Usuarios.DTOs;
 using SIV.Domain.Common;
 using SIV.Domain.Interfaces;
 using SIV.Domain.Entities.Usuarios;
 
 namespace SIV.Application.Modulo.Usuarios.Handlers
 {
-    public class RegistrarCuentaCommandHandler : IRequestHandler<RegistrarCuentaCommand, Result<string>>
+    public class RegistrarCuentaCommandHandler : IRequestHandler<RegistrarCuentaCommand, Result<TokenResponseDto>>
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly ITokenService _tokenService;
@@ -20,13 +21,13 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Result<string>> Handle(RegistrarCuentaCommand request, CancellationToken cancellationToken)
+        public async Task<Result<TokenResponseDto>> Handle(RegistrarCuentaCommand request, CancellationToken cancellationToken)
         {
             var usuarioExistente =
                 await _usuarioRepository.ObtenerPorCorreoAsync(request.Correo);
 
             if (usuarioExistente != null)
-                return Result<string>.Failure("El correo electrónico ya se encuentra registrado en el sistema.",StatusCodes.Status409Conflict);
+                return Result<TokenResponseDto>.Failure("El correo electrónico ya se encuentra registrado en el sistema.", StatusCodes.Status409Conflict);
 
             string passwordHash = _passwordHasher.Hash(request.Contrasena);
 
@@ -37,9 +38,14 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
                 RolesConstantes.Visitante,
                 passwordHash);
 
+            string accessToken = _tokenService.GenerarToken(nuevoUsuario);
+            string refreshToken = Guid.NewGuid().ToString();
+
+            nuevoUsuario.AgregarRefreshToken(refreshToken, 7, request.IpAddress);
+
             await _usuarioRepository.AgregarAsync(nuevoUsuario);
 
-            return Result<string>.Success(_tokenService.GenerarToken(nuevoUsuario));
+            return Result<TokenResponseDto>.Success(new TokenResponseDto(accessToken, refreshToken));
         }
     }
 }

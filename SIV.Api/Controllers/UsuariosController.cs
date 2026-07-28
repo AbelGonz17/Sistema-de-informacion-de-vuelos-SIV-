@@ -224,5 +224,27 @@ namespace SIV.Presentation.Controllers
 
             return result.IsSuccess ? Ok(result) : BadRequest(result);
         }
+
+        [HttpGet("internos")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UsuarioInternoDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IEnumerable<UsuarioInternoDto>>> ObtenerUsuariosInternos()
+        {
+            var result = await _mediator.Send(new ObtenerUsuariosInternosQuery());
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpGet("publicos")]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UsuarioPublicoDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<IEnumerable<UsuarioPublicoDto>>> ObtenerUsuariosPublicos()
+        {
+            var result = await _mediator.Send(new ObtenerUsuariosPublicosQuery());
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
     }
-}
+}

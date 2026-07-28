@@ -16,7 +16,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<Usuario?> ObtenerPorIdAsync(Guid id)
         {
-            return await _context.Usuarios.FindAsync(id);
+            return await _context.Usuarios.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<Usuario?> ObtenerPorCorreoAsync(string correo)
@@ -41,6 +41,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
         public async Task<Usuario?> ObtenerParaModificacionAsync(Guid usuarioId)
         {
             return await _context.Usuarios
+                .IgnoreQueryFilters()
                 .Include(u => u.Seguimientos)
                     .ThenInclude(s => s.Vuelo)
                         .ThenInclude(v => v.AerolineaRef)
@@ -82,6 +83,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
         {
             var rolesInternos = new[] { "Administrador", "Operador", "Auditor" };
             return await _context.Usuarios
+                .IgnoreQueryFilters()
                 .AsNoTracking()
                 .Where(u => rolesInternos.Contains(u.Rol))
                 .OrderBy(u => u.Rol)
@@ -92,6 +94,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
         public async Task<IEnumerable<Usuario>> ObtenerUsuariosPublicosAsync()
         {
             return await _context.Usuarios
+                .IgnoreQueryFilters()
                 .AsNoTracking()
                 .Where(u => u.Rol == "Visitante")
                 .OrderBy(u => u.Nombre)

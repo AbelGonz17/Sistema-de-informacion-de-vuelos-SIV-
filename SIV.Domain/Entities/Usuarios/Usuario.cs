@@ -43,6 +43,17 @@ namespace SIV.Domain.Entities.Usuarios
             Activo = false;
         }
 
+        public void Activar()
+        {
+            Activo = true;
+        }
+
+        public void CambiarContrasena(string nuevoHash)
+        {
+            if (string.IsNullOrWhiteSpace(nuevoHash)) throw new ArgumentException("El hash de la contraseña no puede estar vacío");
+            PassWordHash = nuevoHash;
+        }
+
         public void IniciarSeguimiento(Vuelo vuelo)
         {
             var seguimientoActivo = _seguimientos.FirstOrDefault(s => s.VueloId == vuelo.Id && s.Activo);

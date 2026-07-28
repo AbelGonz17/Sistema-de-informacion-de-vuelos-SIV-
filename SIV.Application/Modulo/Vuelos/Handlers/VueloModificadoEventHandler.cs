@@ -64,9 +64,9 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                 await _notificacionRepository.AgregarRangoAsync(notificaciones);
             }
 
-            foreach (var correoUsuario in seguidoresCorreos)
+            foreach (var usuarioId in seguidoresIds)
             {
-                await _notificacionService.EnviarAlertaUsuarioAsync(correoUsuario, mensajeAlerta);
+                await _notificacionService.EnviarAlertaUsuarioAsync(usuarioId.ToString(), mensajeAlerta);
             }
         }
     }

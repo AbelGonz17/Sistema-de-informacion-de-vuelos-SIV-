@@ -21,6 +21,9 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet]
         [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<IActionResult> ObtenerTodos()
         {
             var result = await _mediator.Send(new ObtenerAeropuertosQuery());
@@ -29,6 +32,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObtenerPorId(Guid id)
         {
             var result = await _mediator.Send(new ObtenerAeropuertoPorIdQuery(id)); 
@@ -41,6 +48,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpPost]
         [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<IActionResult> Crear([FromBody] CrearAeropuertoCommand command)
         {
             var result = await _mediator.Send(command);
@@ -53,6 +64,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<IActionResult> Actualizar(Guid id, [FromBody] ActualizarAeropuertoCommand command)
         {
             command.Id = id;
@@ -66,6 +81,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<IActionResult> Eliminar(Guid id)
         {
             var result = await _mediator.Send(new EliminarAeropuertoCommand(id));

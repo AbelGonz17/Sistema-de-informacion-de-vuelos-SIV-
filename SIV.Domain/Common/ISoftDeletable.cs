@@ -4,5 +4,6 @@ namespace SIV.Domain.Common
     {
         bool Activo { get; }
         void Desactivar();
+        void Activar();
     }
 }

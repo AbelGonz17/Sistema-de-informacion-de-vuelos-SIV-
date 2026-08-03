@@ -6,5 +6,6 @@ namespace SIV.Application.Modulo.Aeropuertos.DTOs
         public string Codigo { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
         public string Pais { get; set; } = string.Empty;
+        public bool Activo { get; set; }
     }
 }

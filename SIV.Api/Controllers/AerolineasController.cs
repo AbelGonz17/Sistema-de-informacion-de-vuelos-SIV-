@@ -83,15 +83,25 @@ namespace SIV.Presentation.Controllers
         [Authorize(Roles = RolesConstantes.Administrador)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Eliminar(Guid id)
         {
             var result = await _mediator.Send(new EliminarAerolineaCommand(id));
+            if (result.IsSuccess) return Ok("Aerolínea desactivada correctamente");
+            return BadRequest(result.ErrorMessage);
+        }
 
-            if (result.IsSuccess)
-                return Ok(result.Value);
-
+        [HttpPatch("{id}/activar")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Activar(Guid id)
+        {
+            var result = await _mediator.Send(new ActivarAerolineaCommand(id));
+            if (result.IsSuccess) return Ok("Aerolínea activada correctamente");
             return BadRequest(result.ErrorMessage);
         }
     }

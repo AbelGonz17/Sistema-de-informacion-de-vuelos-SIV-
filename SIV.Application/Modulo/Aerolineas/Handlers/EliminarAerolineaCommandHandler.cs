@@ -26,7 +26,7 @@ namespace SIV.Application.Modulo.Aerolineas.Handlers
             bool tieneVuelos = await _vueloRepository.ExistenVuelosActivosPorAerolineaAsync(request.Id);
 
             if (tieneVuelos) 
-                return Result<bool>.Failure("No se puede eliminar la aerolínea porque tiene vuelos operativos activos.");
+                return Result<bool>.Failure("No se puede desactivar la aerolínea porque tiene vuelos operativos activos.");
 
             await _aerolineaRepository.EliminarAsync(aerolinea);
             return Result<bool>.Success(true);

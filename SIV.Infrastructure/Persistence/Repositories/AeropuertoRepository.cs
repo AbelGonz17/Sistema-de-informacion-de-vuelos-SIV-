@@ -16,7 +16,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<Aeropuerto>> ObtenerTodosAsync()
         {
-            return await _context.Aeropuertos.AsNoTracking().ToListAsync();
+            return await _context.Aeropuertos.IgnoreQueryFilters().AsNoTracking().ToListAsync();
         }
 
         public async Task<Aeropuerto?> ObtenerPorIdAsync(Guid id)

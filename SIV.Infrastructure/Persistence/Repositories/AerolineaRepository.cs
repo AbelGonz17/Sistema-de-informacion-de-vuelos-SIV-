@@ -16,7 +16,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<Aerolinea>> ObtenerTodasAsync()
         {
-            return await _context.Aerolineas.AsNoTracking().ToListAsync();
+            return await _context.Aerolineas.IgnoreQueryFilters().AsNoTracking().ToListAsync();
         }
 
         public async Task<Aerolinea?> ObtenerPorCodigoAsync(string codigo)

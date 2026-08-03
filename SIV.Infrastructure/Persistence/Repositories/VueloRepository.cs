@@ -98,6 +98,8 @@ namespace SIV.Infrastructure.Persistence.Repositories
         public async Task<(IEnumerable<Vuelo?> Vuelos, int TotalCount)> ObtenerVuelosFidsPaginadosAsync(int pageNumber, int pageSize, bool? esLlegada, string? estado, Guid? aerolineaId, DateTime? fecha)
         {
             var query = _context.Vuelos
+                .IgnoreQueryFilters()
+                .Where(v => v.Activo)
                 .Include(v => v.AerolineaRef)
                 .Include(v => v.OrigenRef)
                 .Include(v => v.DestinoRef)
@@ -154,7 +156,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<Vuelo?>> ObtenerTodosAsync()
         {
-            return await _context.Vuelos.AsNoTracking().ToListAsync();
+            return await _context.Vuelos.IgnoreQueryFilters().AsNoTracking().ToListAsync();
         }
     }
 }

@@ -21,12 +21,12 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<Aerolinea?> ObtenerPorCodigoAsync(string codigo)
         {
-            return await _context.Aerolineas.FirstOrDefaultAsync(a => a.Codigo == codigo);
+            return await _context.Aerolineas.IgnoreQueryFilters().FirstOrDefaultAsync(a => a.Codigo == codigo);
         }
 
         public async Task<Aerolinea?> ObtenerPorIdAsync(Guid id)
         {
-            return await _context.Aerolineas.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Aerolineas.IgnoreQueryFilters().FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task AgregarAsync(Aerolinea aerolinea)
@@ -36,7 +36,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<bool> ExisteCodigoParaOtraAerolineaAsync(Guid idActual, string codigo)
         {
-            return await _context.Aerolineas
+            return await _context.Aerolineas.IgnoreQueryFilters()
                 .AnyAsync(a => a.Id != idActual && a.Codigo.ToLower().Trim() == codigo.ToLower().Trim());
         }
 

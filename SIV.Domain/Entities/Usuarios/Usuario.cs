@@ -48,6 +48,8 @@ namespace SIV.Domain.Entities.Usuarios
             Activo = true;
         }
 
+
+
         public void CambiarContrasena(string nuevoHash)
         {
             if (string.IsNullOrWhiteSpace(nuevoHash)) throw new ArgumentException("El hash de la contraseña no puede estar vacío");

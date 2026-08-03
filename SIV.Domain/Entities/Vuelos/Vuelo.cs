@@ -68,6 +68,11 @@ namespace SIV.Domain.Entities.Vuelos
             Activo = false;
         }
 
+        public void Activar()
+        {
+            Activo = true;
+        }
+
         public void ActualizarDatosBasicos(
             Guid aerolinea, 
             Guid origen, 

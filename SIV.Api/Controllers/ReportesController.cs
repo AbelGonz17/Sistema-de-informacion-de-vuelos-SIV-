@@ -24,6 +24,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("operacion")]
         [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReporteOperacionDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<ActionResult<ReporteOperacionDto>> GenerarReporteOperacion([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin)
         {
             var query = new GenerarReporteOperacionQuery(fechaInicio, fechaFin);
@@ -37,6 +41,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("cambios-operativos")]
         [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ReporteCambioOperativoDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<ActionResult<IEnumerable<ReporteCambioOperativoDto>>> GenerarReporteCambiosOperativos([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFin)
         {
             var query = new GenerarReporteCambiosOperativosQuery(fechaInicio, fechaFin);
@@ -50,6 +58,10 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("seguimiento")]
         [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ReporteSeguimientoDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<ActionResult<ReporteSeguimientoDto>> GenerarReporteSeguimiento([FromQuery] int top = 10)
         {
             var query = new GenerarReporteSeguimientoQuery(top);
@@ -65,6 +77,8 @@ namespace SIV.Presentation.Controllers
         [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Auditor)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(FileContentResult))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
         public async Task<IActionResult> ExportarReporteCsv(string tipo, [FromQuery] DateTime? fechaInicio, [FromQuery] DateTime? fechaFin)
         {
             var query = new ExportarReportesCsvQuery

@@ -12,5 +12,6 @@ namespace SIV.Application.Modulo.Auditoria.Queries
         public DateTime? FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
         public string? Accion { get; set; }
+        public string? Busqueda { get; set; }
     }
 }

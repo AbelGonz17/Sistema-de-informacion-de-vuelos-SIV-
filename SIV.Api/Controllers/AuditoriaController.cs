@@ -29,7 +29,8 @@ namespace SIV.Presentation.Controllers
             [FromQuery] int pageSize = 20,
             [FromQuery] DateTime? fechaInicio = null,
             [FromQuery] DateTime? fechaFin = null,
-            [FromQuery] string? accion = null)
+            [FromQuery] string? accion = null,
+            [FromQuery] string? busqueda = null)
         {
             var query = new ConsultarLogAuditoriaQuery
             {
@@ -37,7 +38,8 @@ namespace SIV.Presentation.Controllers
                 PageSize = pageSize,
                 FechaInicio = fechaInicio,
                 FechaFin = fechaFin,
-                Accion = accion
+                Accion = accion,
+                Busqueda = busqueda
             };
 
             var result = await _mediator.Send(query);

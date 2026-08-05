@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 using SIV.Domain.Entities.Catalogo;
 using SIV.Domain.Entities.Sistema;
 using SIV.Domain.Entities.Usuarios;
@@ -8,8 +10,11 @@ namespace SIV.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor = null) : base(options)
         {
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public DbSet<Vuelo> Vuelos { get; set; }
@@ -115,7 +120,7 @@ namespace SIV.Infrastructure.Persistence
             modelBuilder.Entity<Vuelo>().HasQueryFilter(x => x.Activo);
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (var entry in ChangeTracker.Entries<LogAuditoria>())
             {
@@ -125,7 +130,73 @@ namespace SIV.Infrastructure.Persistence
                 }
             }
 
-            return base.SaveChangesAsync(cancellationToken);
+            var auditEntries = new List<LogAuditoria>();
+            var user = _httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? "Sistema";
+
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.Entity is LogAuditoria || entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                    continue;
+
+                var entityName = entry.Entity.GetType().Name;
+                if (entityName != "Vuelo" && entityName != "Usuario" && entityName != "Aerolinea" && entityName != "Aeropuerto")
+                    continue;
+
+                var accion = entry.State switch
+                {
+                    EntityState.Added => $"Crear{entityName}",
+                    EntityState.Modified => $"Editar{entityName}",
+                    EntityState.Deleted => $"Eliminar{entityName}",
+                    _ => entry.State.ToString()
+                };
+
+                var oldValues = new Dictionary<string, object>();
+                var newValues = new Dictionary<string, object>();
+
+                foreach (var property in entry.Properties)
+                {
+                    if (property.IsTemporary) continue;
+                    
+                    string propertyName = property.Metadata.Name;
+
+                    if (entry.State == EntityState.Added)
+                    {
+                        newValues[propertyName] = property.CurrentValue;
+                    }
+                    else if (entry.State == EntityState.Deleted)
+                    {
+                        oldValues[propertyName] = property.OriginalValue;
+                    }
+                    else if (entry.State == EntityState.Modified)
+                    {
+                        if (property.IsModified)
+                        {
+                            oldValues[propertyName] = property.OriginalValue;
+                            newValues[propertyName] = property.CurrentValue;
+                        }
+                    }
+                }
+
+                var keyName = entry.Metadata.FindPrimaryKey()?.Properties.Select(x => x.Name).SingleOrDefault();
+                var entityId = keyName != null ? entry.Property(keyName).CurrentValue?.ToString() ?? "0" : "0";
+
+                var detallesJson = JsonSerializer.Serialize(new { 
+                    Entidad = entityName, 
+                    EntidadId = entityId, 
+                    ValoresAnteriores = oldValues, 
+                    ValoresNuevos = newValues 
+                });
+
+                var auditEntry = new LogAuditoria(Guid.NewGuid(), user, accion, detallesJson);
+                auditEntries.Add(auditEntry);
+            }
+
+            if (auditEntries.Any())
+            {
+                LogAuditorias.AddRange(auditEntries);
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

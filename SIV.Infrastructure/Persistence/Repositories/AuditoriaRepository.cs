@@ -19,7 +19,7 @@ namespace SIV.Infrastructure.Persistence.Repositories
             await _context.LogAuditorias.AddAsync(log);
         }
 
-        public async Task<(IEnumerable<LogAuditoria> Logs, int TotalCount)> ObtenerLogsPaginadosAsync(int pageNumber, int pageSize, DateTime? fechaInicio, DateTime? fechaFin, string? accion)
+        public async Task<(IEnumerable<LogAuditoria> Logs, int TotalCount)> ObtenerLogsPaginadosAsync(int pageNumber, int pageSize, DateTime? fechaInicio, DateTime? fechaFin, string? accion, string? busqueda = null)
         {
             var query = _context.LogAuditorias.AsNoTracking().AsQueryable();
 
@@ -31,6 +31,9 @@ namespace SIV.Infrastructure.Persistence.Repositories
             
             if (!string.IsNullOrWhiteSpace(accion))           
                 query = query.Where(l => l.Accion.Contains(accion));
+            
+            if (!string.IsNullOrWhiteSpace(busqueda))           
+                query = query.Where(l => l.Usuario.Contains(busqueda) || l.Detalles.Contains(busqueda));
             
             var totalCount = await query.CountAsync();
 

@@ -14,5 +14,10 @@ namespace SIV.Domain.Entities.Catalogo
         {
             Activo = false;
         }
+
+        public void Activar()
+        {
+            Activo = true;
+        }
     }
 }

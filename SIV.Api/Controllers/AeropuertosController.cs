@@ -83,16 +83,26 @@ namespace SIV.Presentation.Controllers
         [Authorize(Roles = RolesConstantes.Administrador)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
-        [ProducesResponseType(StatusCodes.Status403Forbidden, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> Eliminar(Guid id)
         {
             var result = await _mediator.Send(new EliminarAeropuertoCommand(id));
+            if (result.IsSuccess) return Ok("Aeropuerto desactivado correctamente");
+            return BadRequest(result.ErrorMessage);
+        }
 
-            if (result.IsSuccess)
-                return Ok(result);
-
-            return BadRequest(result);
+        [HttpPatch("{id}/activar")]
+        [Authorize(Roles = RolesConstantes.Administrador)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<IActionResult> Activar(Guid id)
+        {
+            var result = await _mediator.Send(new ActivarAeropuertoCommand(id));
+            if (result.IsSuccess) return Ok("Aeropuerto activado correctamente");
+            return BadRequest(result.ErrorMessage);
         }
     }
 }

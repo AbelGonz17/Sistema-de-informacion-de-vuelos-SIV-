@@ -22,7 +22,8 @@ namespace SIV.Application.Modulo.Aerolineas.Handlers
             {
                 Id = a.Id,
                 Codigo = a.Codigo,
-                Nombre = a.Nombre
+                Nombre = a.Nombre,
+                Activo = a.Activo
             });
         }
     }

@@ -16,17 +16,17 @@ namespace SIV.Infrastructure.Persistence.Repositories
 
         public async Task<IEnumerable<Aeropuerto>> ObtenerTodosAsync()
         {
-            return await _context.Aeropuertos.AsNoTracking().ToListAsync();
+            return await _context.Aeropuertos.IgnoreQueryFilters().AsNoTracking().ToListAsync();
         }
 
         public async Task<Aeropuerto?> ObtenerPorIdAsync(Guid id)
         {
-            return await _context.Aeropuertos.FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Aeropuertos.IgnoreQueryFilters().FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<bool> ExisteCodigoParaOtroAeropuertoAsync(Guid idActual, string codigo)
         {
-            return await _context.Aeropuertos
+            return await _context.Aeropuertos.IgnoreQueryFilters()
                 .AnyAsync(a => a.Id != idActual && a.Codigo.ToLower().Trim() == codigo.ToLower().Trim());
         }
 

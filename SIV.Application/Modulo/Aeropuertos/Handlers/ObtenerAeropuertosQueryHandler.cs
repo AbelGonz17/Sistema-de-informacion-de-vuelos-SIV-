@@ -23,7 +23,8 @@ namespace SIV.Application.Modulo.Aeropuertos.Handlers
                 Id = a.Id,
                 Codigo = a.Codigo,
                 Nombre = a.Nombre,
-                Pais = a.Pais
+                Pais = a.Pais,
+                Activo = a.Activo
             });
         }
     }

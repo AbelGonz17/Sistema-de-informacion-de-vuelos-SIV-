@@ -6,6 +6,8 @@ using SIV.Infrastructure.Persistence;
 using SIV.Infrastructure.Persistence.Repositories;
 using SIV.Infrastructure.RealTime;
 using SIV.Infrastructure.Security;
+using SIV.Application.Common.Interfaces;
+using SIV.Infrastructure.Services;
 
 namespace SIV.Infrastructure
 {
@@ -35,6 +37,15 @@ namespace SIV.Infrastructure
             
             services.AddHttpContextAccessor();
             services.AddSignalR(); 
+
+            if (configuration.GetValue<bool>("EmailSettings:UseMock", true))
+            {
+                services.AddScoped<IEmailService, MockEmailService>();
+            }
+            else
+            {
+                services.AddScoped<IEmailService, SmtpEmailService>();
+            }
 
             return services;
         }

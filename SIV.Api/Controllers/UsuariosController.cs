@@ -161,6 +161,24 @@ namespace SIV.Presentation.Controllers
 
         public record CambiarContrasenaRequest(string ContrasenaActual, string NuevaContrasena);
 
+        [HttpPost("olvide-contrasena")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> OlvideContrasena([FromBody] OlvideContrasenaCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("restablecer-contrasena")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
+        public async Task<ActionResult<bool>> RestablecerContrasena([FromBody] RestablecerContrasenaCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.IsSuccess ? Ok(result) : BadRequest(result);
+        }
+
         [HttpGet("mis-seguimientos")]
         [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<HistorialSeguimientoDto>))]

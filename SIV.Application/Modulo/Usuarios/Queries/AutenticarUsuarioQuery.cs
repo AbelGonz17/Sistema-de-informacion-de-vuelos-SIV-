@@ -9,5 +9,6 @@ namespace SIV.Application.Modulo.Usuarios.Queries
         public string Correo { get; set; } = string.Empty;
         public string Contrasena { get; set; } = string.Empty;
         public string IpAddress { get; set; } = string.Empty;
+        public bool Recordarme { get; set; } = false;
     }
 }

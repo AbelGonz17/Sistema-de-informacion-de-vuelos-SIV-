@@ -53,7 +53,8 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
             string accessToken = _tokenService.GenerarToken(usuario);
             string refreshToken = Guid.NewGuid().ToString();
 
-            usuario.AgregarRefreshToken(refreshToken, 7, request.IpAddress);
+            int diasValidez = request.Recordarme ? 30 : 1;
+            usuario.AgregarRefreshToken(refreshToken, diasValidez, request.IpAddress);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             var response = new TokenResponseDto(accessToken, refreshToken);

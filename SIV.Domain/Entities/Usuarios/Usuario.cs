@@ -14,6 +14,8 @@ namespace SIV.Domain.Entities.Usuarios
         public bool Activo { get; private set; } = true;
         public int IntentosFallidosLogin { get; private set; } = 0;
         public DateTime? BloqueadoHasta { get; private set; }
+        public string? ResetPasswordToken { get; private set; }
+        public DateTime? ResetPasswordTokenExpiry { get; private set; }
 
         private readonly List<Seguimiento> _seguimientos = new();
         private readonly List<Notificacion> _notificaciones = new();
@@ -54,6 +56,23 @@ namespace SIV.Domain.Entities.Usuarios
         {
             if (string.IsNullOrWhiteSpace(nuevoHash)) throw new ArgumentException("El hash de la contraseña no puede estar vacío");
             PassWordHash = nuevoHash;
+        }
+
+        public void GenerarTokenRecuperacion(string token, int minutosValidez)
+        {
+            ResetPasswordToken = token;
+            ResetPasswordTokenExpiry = DateTime.UtcNow.AddMinutes(minutosValidez);
+        }
+
+        public bool EsTokenRecuperacionValido(string token)
+        {
+            return ResetPasswordToken == token && ResetPasswordTokenExpiry >= DateTime.UtcNow;
+        }
+
+        public void LimpiarTokenRecuperacion()
+        {
+            ResetPasswordToken = null;
+            ResetPasswordTokenExpiry = null;
         }
 
         public void IniciarSeguimiento(Vuelo vuelo)

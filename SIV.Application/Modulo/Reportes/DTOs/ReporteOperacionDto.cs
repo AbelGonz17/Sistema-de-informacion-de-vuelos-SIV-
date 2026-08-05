@@ -9,6 +9,13 @@ namespace SIV.Application.Modulo.Reportes.DTOs
         public int Otros { get; set; }
 
         public List<VueloOperacionDetalleDto> Vuelos { get; set; } = new();
+        public List<VuelosPorDiaDto> VuelosPorDia { get; set; } = new();
+    }
+
+    public class VuelosPorDiaDto
+    {
+        public string Fecha { get; set; } = string.Empty;
+        public int Total { get; set; }
     }
 
     public class VueloOperacionDetalleDto

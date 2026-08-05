@@ -23,7 +23,8 @@ namespace SIV.Application.Modulo.Auditoria.Handlers
                 request.PageSize,
                 request.FechaInicio,
                 request.FechaFin,
-                request.Accion
+                request.Accion,
+                request.Busqueda
             );
 
             var logsDto = logs.Select(l => new LogAuditoriaDto

@@ -41,7 +41,16 @@ namespace SIV.Application.Modulo.Reportes.Handlers
                     Destino = v.DestinoRef?.Nombre ?? "Desconocido",
                     HorarioPlanificadoSalida = v.HorarioPlanificadoSalida,
                     EstadoActual = v.EstadoActual.ToString()
-                }).ToList()
+                }).ToList(),
+                VuelosPorDia = vuelos
+                    .GroupBy(v => v.HorarioPlanificadoSalida.Date)
+                    .Select(g => new VuelosPorDiaDto
+                    {
+                        Fecha = g.Key.ToString("yyyy-MM-dd"),
+                        Total = g.Count()
+                    })
+                    .OrderBy(x => x.Fecha)
+                    .ToList()
             };
 
             return Result<ReporteOperacionDto>.Success(reporte);

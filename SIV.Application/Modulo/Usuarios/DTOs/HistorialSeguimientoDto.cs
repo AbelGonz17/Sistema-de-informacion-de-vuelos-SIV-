@@ -9,5 +9,13 @@ namespace SIV.Application.Modulo.Usuarios.DTOs
         public DateTime FechaInicio { get; set; }
         public DateTime? FechaFin { get; set; }
         public bool Activo { get; set; }
+        
+        // Vuelo en tiempo real
+        public string Origen { get; set; } = string.Empty;
+        public string Destino { get; set; } = string.Empty;
+        public string EstadoActual { get; set; } = string.Empty;
+        public DateTime HorarioPlanificado { get; set; }
+        public DateTime? HorarioEstimado { get; set; }
+        public string Puerta { get; set; } = string.Empty;
     }
 }

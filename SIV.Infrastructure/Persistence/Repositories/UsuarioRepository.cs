@@ -36,6 +36,12 @@ namespace SIV.Infrastructure.Persistence.Repositories
                 .Include(u => u.Seguimientos.Where(s => s.Activo))
                     .ThenInclude(s => s.Vuelo)
                         .ThenInclude(v => v.AerolineaRef)
+                .Include(u => u.Seguimientos.Where(s => s.Activo))
+                    .ThenInclude(s => s.Vuelo)
+                        .ThenInclude(v => v.OrigenRef)
+                .Include(u => u.Seguimientos.Where(s => s.Activo))
+                    .ThenInclude(s => s.Vuelo)
+                        .ThenInclude(v => v.DestinoRef)
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 

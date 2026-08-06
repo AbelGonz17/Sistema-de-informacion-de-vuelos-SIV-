@@ -31,7 +31,13 @@ namespace SIV.Application.Modulo.Usuarios.Handlers
                 Aerolinea = seguimiento.Vuelo.AerolineaRef?.Nombre ?? "",
                 FechaInicio = seguimiento.FechaInicio,
                 FechaFin = seguimiento.FechaFin,
-                Activo = seguimiento.Activo
+                Activo = seguimiento.Activo,
+                Origen = seguimiento.Vuelo.OrigenRef?.Nombre ?? "N/A",
+                Destino = seguimiento.Vuelo.DestinoRef?.Nombre ?? "N/A",
+                EstadoActual = seguimiento.Vuelo.EstadoActual.ToString(),
+                HorarioPlanificado = seguimiento.Vuelo.HorarioPlanificadoSalida,
+                HorarioEstimado = seguimiento.Vuelo.HorarioEstimadoSalida,
+                Puerta = seguimiento.Vuelo.Puerta ?? "N/A"
             }).ToList();
 
             return Result<IEnumerable<HistorialSeguimientoDto>>.Success(listaDtos);

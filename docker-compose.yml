@@ -13,5 +13,18 @@ services:
     volumes:
       - siv_db_data:/var/opt/mssql/data
 
+  siv-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: SIV_API
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=siv-db,1433;Database=SIV_DB;User Id=sa;Password=${MSSQL_PASSWORD};TrustServerCertificate=True;
+    depends_on:
+      - siv-db
+
 volumes:
   siv_db_data:

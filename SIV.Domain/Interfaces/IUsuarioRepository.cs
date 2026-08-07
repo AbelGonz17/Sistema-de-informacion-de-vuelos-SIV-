@@ -15,6 +15,7 @@ namespace SIV.Domain.Interfaces
         Task<IEnumerable<Guid>> ObtenerIdsSeguidoresDeVueloAsync(Guid vueloId);
         Task<IEnumerable<Usuario>> ObtenerUsuariosInternosAsync();
         Task<IEnumerable<Usuario>> ObtenerUsuariosPublicosAsync();
+        Task<Dictionary<Guid, string>> ObtenerNombresPorIdsAsync(IEnumerable<Guid> ids);
 
     }
 }

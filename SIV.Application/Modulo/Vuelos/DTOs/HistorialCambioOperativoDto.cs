@@ -6,6 +6,6 @@ namespace SIV.Application.Modulo.Vuelos.DTOs
         public string Motivo { get; set; } = string.Empty;
         public string DetalleCambio { get; set; } = string.Empty;
         public DateTime FechaHora { get; set; }
-        public Guid UsuarioResponsable { get; set; }
+        public string UsuarioResponsable { get; set; } = string.Empty;
     }
 }

@@ -107,5 +107,17 @@ namespace SIV.Infrastructure.Persistence.Repositories
                 .OrderBy(u => u.Nombre)
                 .ToListAsync();
         }
+
+        public async Task<Dictionary<Guid, string>> ObtenerNombresPorIdsAsync(IEnumerable<Guid> ids)
+        {
+            var idsList = ids.Distinct().ToList();
+            if (!idsList.Any()) return new Dictionary<Guid, string>();
+
+            return await _context.Usuarios
+                .IgnoreQueryFilters()
+                .AsNoTracking()
+                .Where(u => idsList.Contains(u.Id))
+                .ToDictionaryAsync(u => u.Id, u => u.Nombre);
+        }
     }
 }

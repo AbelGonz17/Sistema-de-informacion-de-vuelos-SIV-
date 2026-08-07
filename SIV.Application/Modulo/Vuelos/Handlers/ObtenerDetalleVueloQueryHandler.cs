@@ -10,10 +10,12 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
     public class ObtenerDetalleVueloQueryHandler : IRequestHandler<ObtenerDetalleVueloQuery, Result<VueloDetalleDto>>
     {
         private readonly IVueloRepository _vueloRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public ObtenerDetalleVueloQueryHandler(IVueloRepository vueloRepository)
+        public ObtenerDetalleVueloQueryHandler(IVueloRepository vueloRepository, IUsuarioRepository usuarioRepository)
         {
             _vueloRepository = vueloRepository;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<Result<VueloDetalleDto>> Handle(ObtenerDetalleVueloQuery request, CancellationToken cancellationToken)
@@ -24,6 +26,13 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
             {
                 return Result<VueloDetalleDto>.Failure("Vuelo no encontrado.", 404);
             }
+
+            var usuariosIds = vuelo.HistorialEstados.Select(h => h.UsuarioResponsable)
+                .Concat(vuelo.HistorialCambio.Select(c => c.UsuarioResponsable))
+                .Distinct()
+                .ToList();
+
+            var usuariosDict = await _usuarioRepository.ObtenerNombresPorIdsAsync(usuariosIds);
 
             var dto = new VueloDetalleDto(
                 vuelo.Id,
@@ -43,7 +52,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                     EstadoAnterior = h.EstadoAnterior.ToString(),
                     EstadoNuevo = h.EstadoNuevo.ToString(),
                     FechaHora = h.FechaHora,
-                    UsuarioResponsable = h.UsuarioResponsable
+                    UsuarioResponsable = h.UsuarioResponsable == Guid.Empty ? "Sistema" : usuariosDict.GetValueOrDefault(h.UsuarioResponsable, "Desconocido")
                 }).ToList(),
                 vuelo.HistorialCambio.Select(c => new HistorialCambioOperativoDto
                 {
@@ -51,7 +60,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                     Motivo = c.Motivo,
                     DetalleCambio = c.DetalleCambio,
                     FechaHora = c.FechaHora,
-                    UsuarioResponsable = c.UsuarioResponsable
+                    UsuarioResponsable = c.UsuarioResponsable == Guid.Empty ? "Sistema" : usuariosDict.GetValueOrDefault(c.UsuarioResponsable, "Desconocido")
                 }).ToList()
             );
 

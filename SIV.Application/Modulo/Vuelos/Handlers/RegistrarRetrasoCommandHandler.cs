@@ -31,7 +31,7 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
 
             var horaBase = vuelo.HorarioEstimadoSalida ?? vuelo.HorarioPlanificadoSalida;
             if (request.NuevaHoraSalida <= horaBase)
-                return Result<bool>.Failure($"La nueva hora ({request.NuevaHoraSalida:HH:mm}) debe ser estrictamente posterior a la hora programada/estimada actual ({horaBase:HH:mm}) para registrarse como retraso.", StatusCodes.Status400BadRequest);
+                return Result<bool>.Failure($"La nueva hora ({request.NuevaHoraSalida:dd/MM/yyyy HH:mm}) debe ser estrictamente posterior a la hora programada/estimada actual ({horaBase:dd/MM/yyyy HH:mm}) para registrarse como retraso.", StatusCodes.Status400BadRequest);
 
             var usuarioId = _seguridadService.ObtenerIdUsuarioActual();
             vuelo.ActualizarHorarioEstimado(request.NuevaHoraSalida, request.Motivo, usuarioId);

@@ -8,6 +8,7 @@ namespace SIV.Domain.Interfaces
         Task<Vuelo?> ObtenerPorIdConHistorialAsync(Guid id);
         Task<Vuelo?> ObtenerDetalleCompletoAsync(Guid id);
         Task<bool> ExistenVuelosActivosPorAerolineaAsync(Guid aerolineaId);
+        Task<bool> ExistenVuelosActivosPorAeropuertoAsync(Guid aeropuertoId);
         Task<Vuelo?> ObtenerPorNumeroAsync(string numeroVuelo);
         Task<IEnumerable<Vuelo?>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada); 
         Task AgregarAsync(Vuelo vuelo);

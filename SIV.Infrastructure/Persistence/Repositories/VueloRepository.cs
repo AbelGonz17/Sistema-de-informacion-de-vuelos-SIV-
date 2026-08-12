@@ -54,6 +54,14 @@ namespace SIV.Infrastructure.Persistence.Repositories
                             && v.EstadoActual != EstadoVuelo.Completado);
         }
 
+        public async Task<bool> ExistenVuelosActivosPorAeropuertoAsync(Guid aeropuertoId)
+        {
+            return await _context.Vuelos
+                .AnyAsync(v => (v.Origen == aeropuertoId || v.Destino == aeropuertoId) && v.Activo
+                            && v.EstadoActual != EstadoVuelo.Cancelado
+                            && v.EstadoActual != EstadoVuelo.Completado);
+        }
+
         public async Task<IEnumerable<Vuelo?>> ObtenerVuelosPorFechaYTipoAsync(DateTime fecha, bool esLlegada)
         {
             var query = _context.Vuelos

@@ -32,8 +32,13 @@ namespace SIV.Infrastructure.Persistence.Repositories
             if (!string.IsNullOrWhiteSpace(accion))           
                 query = query.Where(l => l.Accion.Contains(accion));
             
-            if (!string.IsNullOrWhiteSpace(busqueda))           
-                query = query.Where(l => l.Usuario.Contains(busqueda) || l.Detalles.Contains(busqueda));
+            if (!string.IsNullOrWhiteSpace(busqueda))
+            {
+                var busquedaLower = busqueda.ToLower().Trim();
+                query = query.Where(l => l.Usuario.ToLower().Contains(busquedaLower) 
+                                      || l.Accion.ToLower().Contains(busquedaLower) 
+                                      || l.Detalles.ToLower().Contains(busquedaLower));
+            }
             
             var totalCount = await query.CountAsync();
 

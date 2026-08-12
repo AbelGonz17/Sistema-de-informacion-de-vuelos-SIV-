@@ -10,6 +10,10 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// -----------------------------------------------------------------------------
+// 1. Configuración de Servicios
+// -----------------------------------------------------------------------------
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -26,12 +30,11 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "KeySuperSeguraPorDefecto1234567890")),
 
-        NameClaimType = "name", 
+        NameClaimType = "name",
         RoleClaimType = System.Security.Claims.ClaimTypes.Role,
         ClockSkew = TimeSpan.Zero
-
     };
 
     options.Events = new JwtBearerEvents
@@ -40,13 +43,12 @@ builder.Services.AddAuthentication(options =>
         {
             Console.WriteLine($"Fallo de autenticación: {context.Exception.Message}");
             return Task.CompletedTask;
-        },     
+        }
     };
 });
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SIV API", Version = "v1" });
@@ -66,7 +68,7 @@ builder.Services.AddSwaggerGen(c =>
         {
             new OpenApiSecurityScheme
             {
-                Reference = new     OpenApiReference
+                Reference = new OpenApiReference
                 {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
@@ -87,49 +89,81 @@ builder.Services.AddCors(options =>
         policy.SetIsOriginAllowed(origin => true)
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); 
+              .AllowCredentials();
     });
 });
 
 var app = builder.Build();
 
+// -----------------------------------------------------------------------------
+// 2. Pipeline de HTTP Middleware
+// -----------------------------------------------------------------------------
+
 app.UseMiddleware<SIV.Api.Middleware.GlobalExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
+// Habilitar Swagger siempre (o mantener solo si es Development/Production)
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SIV API v1");
+        c.RoutePrefix = "swagger"; // Acceso en /swagger
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.MapHub<FidsHub>("/vuelosHub");
+
+// -----------------------------------------------------------------------------
+// 3. Migraciones automáticas y Seed Data con reintentos para Docker
+// -----------------------------------------------------------------------------
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
-    {
-        var context = services.GetRequiredService<ApplicationDbContext>();
+    var logger = services.GetRequiredService<ILogger<Program>>();
 
-        if (context.Database.GetPendingMigrations().Any())
+    int maxRetries = 5;
+    int delaySeconds = 5;
+
+    for (int retry = 1; retry <= maxRetries; retry++)
+    {
+        try
         {
-            await context.Database.MigrateAsync();
-        }
+            logger.LogInformation($"Intentando conectar a SQL Server y aplicar migraciones (Intento {retry}/{maxRetries})...");
+            var context = services.GetRequiredService<ApplicationDbContext>();
 
-        await DatabaseSeeder.SeedAsync(context);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ocurrió un error al aplicar las migraciones automáticas en Docker.");
+            var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
+            {
+                logger.LogInformation("Aplicando migraciones pendientes...");
+                await context.Database.MigrateAsync();
+            }
+
+            await DatabaseSeeder.SeedAsync(context);
+            logger.LogInformation("Base de datos sincronizada y datos iniciales (Seed) cargados exitosamente.");
+            break; // Conexión exitosa, salir del bucle
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning($"Intento {retry} fallido: {ex.Message}");
+
+            if (retry == maxRetries)
+            {
+                logger.LogError(ex, "Ocurrió un error crítico al aplicar las migraciones automáticas tras múltiples intentos.");
+            }
+            else
+            {
+                logger.LogInformation($"Esperando {delaySeconds} segundos antes de reintentar...");
+                await Task.Delay(TimeSpan.FromSeconds(delaySeconds));
+            }
+        }
     }
 }
 

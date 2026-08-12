@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SIV.Application.Common.Mappings;
 using SIV.Application.Common.Models;
 using SIV.Application.Modulo.Vuelos.Commands;
+using SIV.Application.Modulo.Vuelos.DTOs;
 using SIV.Application.Modulo.Vuelos.Queries;
 using SIV.Domain.Common;
 
@@ -36,6 +37,21 @@ namespace SIV.Presentation.Controllers
 
             return BadRequest(result);
         }
+        [HttpPost("upload")]
+        [Authorize(Roles = RolesConstantes.Operador)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Consumes("multipart/form-data")]   
+        public async Task<IActionResult> CargarVuelosMasivo([FromForm] CargarVuelosMasivoRequest request)
+        {
+            var command = new CargarVuelosMasivoCommand { Archivo = request.File };
+            var result = await _mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
 
         [HttpPut("{id}/basico")]
         [Authorize(Roles = RolesConstantes.Operador)]
@@ -60,7 +76,7 @@ namespace SIV.Presentation.Controllers
         public record ActualizarDatosBasicosRequest(Guid Aerolinea, Guid Origen, Guid Destino, DateTime HorarioPlanificadoSalida, DateTime HorarioPlanificadoLlegada, string Puerta);
 
         [HttpGet("{id}/detalle")]
-        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor)]
+        [Authorize(Roles = RolesConstantes.Administrador + "," + RolesConstantes.Operador + "," + RolesConstantes.Auditor + "," + RolesConstantes.Visitante)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObtenerDetalle(Guid id)
@@ -154,7 +170,7 @@ namespace SIV.Presentation.Controllers
 
         [HttpGet("buscar/{numeroVuelo}")]
         [AllowAnonymous]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(object))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(VueloDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ProblemDetails))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]

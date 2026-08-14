@@ -2,8 +2,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SIV.Infrastructure.Persistence;
 
 #nullable disable
@@ -18,28 +18,28 @@ namespace SIV.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.27")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("SIV.Domain.Entities.Catalogo.Aerolinea", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Codigo")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("character varying(10)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -53,24 +53,24 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Codigo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Pais")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -81,24 +81,24 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Accion")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Detalles")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Usuario")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -109,32 +109,32 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("FechaHoraGenearicion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("FueLeida")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Mensaje")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("TipoEvento")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("UsuarioDestinatarioId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("VueloRelacionadoId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -147,22 +147,22 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("FechaFin")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("VueloId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -177,42 +177,42 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("BloqueadoHasta")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Correo")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("character varying(150)");
 
                     b.Property<int>("IntentosFallidosLogin")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("PassWordHash")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("ResetPasswordToken")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("ResetPasswordTokenExpiry")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Rol")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
@@ -223,28 +223,28 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("DetalleCambio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Motivo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("TipoCambio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<Guid>("UsuarioResponsable")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("VueloId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -257,22 +257,22 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("EstadoAnterior")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("EstadoNuevo")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UsuarioResponsable")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("VueloId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -285,50 +285,50 @@ namespace SIV.Infrastructure.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("Aerolinea")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("Destino")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("EstadoActual")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTime?>("HorarioEstimadoLlegada")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("HorarioEstimadoSalida")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("HorarioPlanificadoLlegada")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("HorarioPlanificadoSalida")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MotivoUltimoCambio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("NumeroVuelo")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<Guid>("Origen")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Puerta")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("character varying(10)");
 
                     b.HasKey("Id");
 
@@ -371,29 +371,29 @@ namespace SIV.Infrastructure.Migrations
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<bool>("Codificado")
-                                .HasColumnType("bit");
+                                .HasColumnType("boolean");
 
                             b1.Property<string>("CreadoPorIp")
                                 .IsRequired()
                                 .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<DateTime>("FechaCreacion")
-                                .HasColumnType("datetime2");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<DateTime>("FechaExpiracion")
-                                .HasColumnType("datetime2");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<string>("Token")
                                 .IsRequired()
                                 .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)");
+                                .HasColumnType("character varying(200)");
 
                             b1.Property<Guid>("UsuarioId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 

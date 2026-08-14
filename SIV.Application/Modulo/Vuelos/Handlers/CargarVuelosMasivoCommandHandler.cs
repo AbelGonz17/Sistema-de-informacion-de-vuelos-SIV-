@@ -109,6 +109,8 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                         continue;
                     }
 
+                    salida = DateTime.SpecifyKind(salida, DateTimeKind.Utc);
+                    llegada = DateTime.SpecifyKind(llegada, DateTimeKind.Utc);
                     string puerta = row.Cell(7).GetValue<string>();
 
                     if (string.IsNullOrEmpty(aerolineaStr) || !aerolineaDict.TryGetValue(aerolineaStr, out Guid aerolineaId))
@@ -149,8 +151,8 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
                         aerolineaId,
                         origenId,
                         destinoId,
-                        salida,
-                        llegada,
+                        DateTime.SpecifyKind(salida, DateTimeKind.Utc),
+                        DateTime.SpecifyKind(llegada, DateTimeKind.Utc),
                         puerta,
                         "Registro masivo de vuelo",
                         usuarioId
@@ -190,3 +192,5 @@ namespace SIV.Application.Modulo.Vuelos.Handlers
         }
     }
 }
+
+

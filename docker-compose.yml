@@ -1,17 +1,16 @@
-version: "3.8"
-
 services:
   siv-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: SIV_SQL_Server
-    user: "0"
+    image: postgres:16-alpine
+    container_name: SIV_Postgres
+    restart: always
     ports:
-      - "1433:1433"
+      - "5432:5432"
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${MSSQL_PASSWORD}
+      POSTGRES_DB: SIV_DB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres123}
     volumes:
-      - siv_db_data:/var/opt/mssql/data
+      - siv_postgres_data:/var/lib/postgresql/data
 
   siv-api:
     build:
@@ -22,9 +21,10 @@ services:
       - "8080:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=siv-db,1433;Database=SIV_DB;User Id=sa;Password=${MSSQL_PASSWORD};TrustServerCertificate=True;
+      - ConnectionStrings__DefaultConnection=Host=siv-db;Port=5432;Database=SIV_DB;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres123};
     depends_on:
       - siv-db
 
 volumes:
-  siv_db_data:
+  siv_postgres_data:
+

@@ -2,9 +2,9 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SIV.Infrastructure.Persistence;
 
 #nullable disable
@@ -12,8 +12,8 @@ using SIV.Infrastructure.Persistence;
 namespace SIV.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260630132543_refreshToken")]
-    partial class refreshToken
+    [Migration("20260814145114_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,28 +21,28 @@ namespace SIV.Infrastructure.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.27")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SIV.Domain.Entities.Aerolinea", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Catalogo.Aerolinea", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Codigo")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("character varying(10)");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
@@ -52,155 +52,92 @@ namespace SIV.Infrastructure.Migrations
                     b.ToTable("Aerolineas");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Aeropuerto", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Catalogo.Aeropuerto", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Codigo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Pais")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Aeropuertos");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.HistorialCambioOperativo", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Sistema.LogAuditoria", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DetalleCambio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Motivo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TipoCambio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UsuarioResponsable")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("VueloId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VueloId");
-
-                    b.ToTable("HistorialCambiosOperativos");
-                });
-
-            modelBuilder.Entity("SIV.Domain.Entities.HistorialEstado", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("EstadoAnterior")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EstadoNuevo")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("FechaHora")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UsuarioResponsable")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("VueloId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VueloId");
-
-                    b.ToTable("HistorialEstados");
-                });
-
-            modelBuilder.Entity("SIV.Domain.Entities.LogAuditoria", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Accion")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Detalles")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("FechaRegistro")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Usuario")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
                     b.ToTable("LogAuditorias");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Notificacion", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Sistema.Notificacion", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("FechaHoraGenearicion")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("FueLeida")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Mensaje")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("TipoEvento")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<Guid>("UsuarioDestinatarioId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid?>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("VueloRelacionadoId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -209,26 +146,26 @@ namespace SIV.Infrastructure.Migrations
                     b.ToTable("Notificaciones");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Seguimiento", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Usuarios.Seguimiento", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("FechaFin")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("VueloId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -239,88 +176,162 @@ namespace SIV.Infrastructure.Migrations
                     b.ToTable("Seguimientos");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Usuario", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Usuarios.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("BloqueadoHasta")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Correo")
                         .IsRequired()
                         .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<int>("IntentosFallidosLogin")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("PassWordHash")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("ResetPasswordToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ResetPasswordTokenExpiry")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Rol")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Vuelo", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.HistorialCambioOperativo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DetalleCambio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("FechaHora")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TipoCambio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UsuarioResponsable")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VueloId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VueloId");
+
+                    b.ToTable("HistorialCambiosOperativos");
+                });
+
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.HistorialEstado", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("EstadoAnterior")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EstadoNuevo")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("FechaHora")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UsuarioResponsable")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("VueloId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VueloId");
+
+                    b.ToTable("HistorialEstados");
+                });
+
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.Vuelo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("Activo")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("Aerolinea")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("Destino")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("EstadoActual")
                         .IsRequired()
                         .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<DateTime?>("HorarioEstimadoLlegada")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("HorarioEstimadoSalida")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("HorarioPlanificadoLlegada")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("HorarioPlanificadoSalida")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MotivoUltimoCambio")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("NumeroVuelo")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<Guid>("Origen")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Puerta")
                         .IsRequired()
                         .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("character varying(10)");
 
                     b.HasKey("Id");
 
@@ -333,40 +344,22 @@ namespace SIV.Infrastructure.Migrations
                     b.ToTable("Vuelos");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.HistorialCambioOperativo", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Sistema.Notificacion", b =>
                 {
-                    b.HasOne("SIV.Domain.Entities.Vuelo", null)
-                        .WithMany("HistorialCambio")
-                        .HasForeignKey("VueloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SIV.Domain.Entities.HistorialEstado", b =>
-                {
-                    b.HasOne("SIV.Domain.Entities.Vuelo", null)
-                        .WithMany("HistorialEstados")
-                        .HasForeignKey("VueloId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SIV.Domain.Entities.Notificacion", b =>
-                {
-                    b.HasOne("SIV.Domain.Entities.Usuario", null)
+                    b.HasOne("SIV.Domain.Entities.Usuarios.Usuario", null)
                         .WithMany("Notificaciones")
                         .HasForeignKey("UsuarioId");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Seguimiento", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Usuarios.Seguimiento", b =>
                 {
-                    b.HasOne("SIV.Domain.Entities.Usuario", null)
+                    b.HasOne("SIV.Domain.Entities.Usuarios.Usuario", null)
                         .WithMany("Seguimientos")
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SIV.Domain.Entities.Vuelo", "Vuelo")
+                    b.HasOne("SIV.Domain.Entities.Vuelos.Vuelo", "Vuelo")
                         .WithMany()
                         .HasForeignKey("VueloId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -375,35 +368,35 @@ namespace SIV.Infrastructure.Migrations
                     b.Navigation("Vuelo");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Usuario", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Usuarios.Usuario", b =>
                 {
-                    b.OwnsMany("SIV.Domain.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("SIV.Domain.Entities.Usuarios.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<Guid>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<bool>("Codificado")
-                                .HasColumnType("bit");
+                                .HasColumnType("boolean");
 
                             b1.Property<string>("CreadoPorIp")
                                 .IsRequired()
                                 .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<DateTime>("FechaCreacion")
-                                .HasColumnType("datetime2");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<DateTime>("FechaExpiracion")
-                                .HasColumnType("datetime2");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<string>("Token")
                                 .IsRequired()
                                 .HasMaxLength(200)
-                                .HasColumnType("nvarchar(200)");
+                                .HasColumnType("character varying(200)");
 
                             b1.Property<Guid>("UsuarioId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 
@@ -418,21 +411,39 @@ namespace SIV.Infrastructure.Migrations
                     b.Navigation("RefreshTokens");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Vuelo", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.HistorialCambioOperativo", b =>
                 {
-                    b.HasOne("SIV.Domain.Entities.Aerolinea", "AerolineaRef")
+                    b.HasOne("SIV.Domain.Entities.Vuelos.Vuelo", null)
+                        .WithMany("HistorialCambio")
+                        .HasForeignKey("VueloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.HistorialEstado", b =>
+                {
+                    b.HasOne("SIV.Domain.Entities.Vuelos.Vuelo", null)
+                        .WithMany("HistorialEstados")
+                        .HasForeignKey("VueloId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.Vuelo", b =>
+                {
+                    b.HasOne("SIV.Domain.Entities.Catalogo.Aerolinea", "AerolineaRef")
                         .WithMany()
                         .HasForeignKey("Aerolinea")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SIV.Domain.Entities.Aeropuerto", "DestinoRef")
+                    b.HasOne("SIV.Domain.Entities.Catalogo.Aeropuerto", "DestinoRef")
                         .WithMany()
                         .HasForeignKey("Destino")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SIV.Domain.Entities.Aeropuerto", "OrigenRef")
+                    b.HasOne("SIV.Domain.Entities.Catalogo.Aeropuerto", "OrigenRef")
                         .WithMany()
                         .HasForeignKey("Origen")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -445,14 +456,14 @@ namespace SIV.Infrastructure.Migrations
                     b.Navigation("OrigenRef");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Usuario", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Usuarios.Usuario", b =>
                 {
                     b.Navigation("Notificaciones");
 
                     b.Navigation("Seguimientos");
                 });
 
-            modelBuilder.Entity("SIV.Domain.Entities.Vuelo", b =>
+            modelBuilder.Entity("SIV.Domain.Entities.Vuelos.Vuelo", b =>
                 {
                     b.Navigation("HistorialCambio");
 

@@ -100,7 +100,7 @@ namespace SIV.Infrastructure.Persistence
                 entity.Property(e => e.Usuario).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Accion).IsRequired().HasMaxLength(100);
 
-                entity.Property(e => e.Detalles).HasColumnType("nvarchar(max)").IsRequired();
+                entity.Property(e => e.Detalles).HasColumnType("text").IsRequired();
                 entity.Property(e => e.FechaRegistro).IsRequired();
             });
 

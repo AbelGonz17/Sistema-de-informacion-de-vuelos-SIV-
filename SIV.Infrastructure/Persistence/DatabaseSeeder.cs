@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SIV.Domain.Entities.Catalogo;
+using SIV.Domain.Entities.Usuarios;
+using SIV.Domain.Common;
 
 namespace SIV.Infrastructure.Persistence
 {
@@ -30,6 +32,23 @@ namespace SIV.Infrastructure.Persistence
                 };
 
                 await context.Aeropuertos.AddRangeAsync(aeropuertos);
+            }
+
+            if (!await context.Usuarios.AnyAsync(u => u.Rol == RolesConstantes.Administrador))
+            {
+                string correoAdmin = "admin@siv.com";
+                string contrasenaAdmin = "Admin123!";
+                string hashContrasena = BCrypt.Net.BCrypt.HashPassword(contrasenaAdmin);
+
+                var admin = new Usuario(
+                    Guid.NewGuid(),
+                    "Administrador del Sistema",
+                    correoAdmin,
+                    RolesConstantes.Administrador,
+                    hashContrasena
+                );
+
+                await context.Usuarios.AddAsync(admin);
             }
 
             if (context.ChangeTracker.HasChanges())

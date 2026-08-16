@@ -2,7 +2,11 @@ using MediatR;
 using SIV.Application.Common.Interfaces;
 using SIV.Application.Modulo.Vuelos.Commands;
 using SIV.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SIV.Application.EventHandlers
 {
@@ -12,17 +16,20 @@ namespace SIV.Application.EventHandlers
         private readonly IVueloRepository _vueloRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IEmailService _emailService;
+        private readonly ILogger<VueloModificadoEventHandler> _logger;
 
         public VueloModificadoEventHandler(
             INotificacionService notificacionService, 
             IVueloRepository vueloRepository,
             IUsuarioRepository usuarioRepository,
-            IEmailService emailService)
+            IEmailService emailService,
+            ILogger<VueloModificadoEventHandler> logger)
         {
             _notificacionService = notificacionService;
             _vueloRepository = vueloRepository;
             _usuarioRepository = usuarioRepository;
             _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task Handle(VueloModificadoEvent notification, CancellationToken cancellationToken)
@@ -50,7 +57,14 @@ namespace SIV.Application.EventHandlers
 
                     foreach (var correo in seguidoresCorreos)
                     {
-                        await _emailService.SendEmailAsync(correo, asunto, cuerpo);
+                        try
+                        {
+                            await _emailService.SendEmailAsync(correo, asunto, cuerpo);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, $"Error al enviar correo de actualización de vuelo a {correo}. El proceso continuará.");
+                        }
                     }
                 }
             }

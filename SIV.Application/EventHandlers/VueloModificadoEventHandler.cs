@@ -53,8 +53,11 @@ namespace SIV.Application.EventHandlers
                     var motivo = vuelo.MotivoUltimoCambio ?? "Sin detalles adicionales";
 
                     // Enviar correos en segundo plano para no bloquear al operador
+                    // IMPORTANTE: CancellationToken.None para que el task no sea cancelado al terminar la request HTTP
                     _ = Task.Run(async () =>
                     {
+                        _logger.LogInformation($"[Email] Iniciando envío de notificaciones de cambio de estado para vuelo {numeroVuelo} a {seguidoresCorreos.Count()} seguidores");
+
                         using var scope = _scopeFactory.CreateScope();
                         var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
@@ -72,14 +75,16 @@ namespace SIV.Application.EventHandlers
                         {
                             try
                             {
+                                _logger.LogInformation($"[Email] Enviando notificación de vuelo {numeroVuelo} a {correo}");
                                 await emailService.SendEmailAsync(correo, asunto, cuerpo);
+                                _logger.LogInformation($"[Email] Notificación enviada correctamente a {correo}");
                             }
                             catch (Exception ex)
                             {
-                                _logger.LogError(ex, $"Error al enviar correo de actualización de vuelo a {correo} en segundo plano.");
+                                _logger.LogError(ex, $"[Email] Error al enviar notificación de vuelo {numeroVuelo} a {correo}");
                             }
                         }
-                    }, cancellationToken);
+                    }, CancellationToken.None);
                 }
             }
         }

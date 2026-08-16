@@ -38,7 +38,8 @@ namespace SIV.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             
             services.AddHttpContextAccessor();
-            services.AddSignalR(); 
+            services.AddSignalR();
+            services.AddHttpClient(); // Requerido por ResendEmailService
 
             if (configuration.GetValue<bool>("EmailSettings:UseMock", true))
             {
@@ -46,7 +47,7 @@ namespace SIV.Infrastructure
             }
             else
             {
-                services.AddScoped<IEmailService, SmtpEmailService>();
+                services.AddScoped<IEmailService, ResendEmailService>();
             }
 
             return services;

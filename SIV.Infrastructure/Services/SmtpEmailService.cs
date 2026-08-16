@@ -31,7 +31,8 @@ namespace SIV.Infrastructure.Services
                 using var client = new SmtpClient(host, port)
                 {
                     Credentials = new NetworkCredential(user, pass),
-                    EnableSsl = true
+                    EnableSsl = true,
+                    Timeout = 5000
                 };
 
                 var mailMessage = new MailMessage
